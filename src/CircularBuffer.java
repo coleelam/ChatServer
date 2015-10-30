@@ -93,7 +93,7 @@ public class CircularBuffer
     }
 
     // TESTs general functionality of CircularBuffer with debug writeout.
-    public static void main(String[] args)
+    /*public static void main(String[] args)
     {
         CircularBuffer buffer = new CircularBuffer(5);
         buffer.put("1");
@@ -105,6 +105,6 @@ public class CircularBuffer
         buffer.put("5");
         buffer.put("6");
         System.out.println(Arrays.toString(buffer.getNewest(3)));
-    }
+    }*/
 
 }

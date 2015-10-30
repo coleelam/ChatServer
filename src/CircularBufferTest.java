@@ -45,7 +45,6 @@ public class CircularBufferTest {
     @Test
     public void test5() throws Exception {
         CircularBuffer trash = new CircularBuffer(1);
-        System.out.println(Arrays.toString(trash.getNewest(1)));
         Assert.assertEquals(trash.getNewest(1), null);
     }
     @Test
