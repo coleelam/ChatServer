@@ -1,7 +1,5 @@
-public class ChatServer {
 import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion.User;
-
 import java.util.*;
 
 /**
