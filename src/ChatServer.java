@@ -10,7 +10,7 @@ import java.util.*;
  * This is the skeleton code for the ChatServer Class. This is a private chat
  * server for you and your friends to communicate.
  *
- * @author Cole Elam <(elamc@purdue.edu)>
+ * @author Cole Elam, Benjamin Maxfield <(elamc@purdue.edu)> && <(bmaxfie@purdue.edu)>
  *
  * @lab 814
  *
