@@ -1,0 +1,8 @@
+language: java
+notifications:
+    email:
+        recipients:
+            elamc@purdue.edu
+            bmaxfie@purdue.edu
+        on_success: # default: change
+        on_failure: # default: never
