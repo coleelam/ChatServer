@@ -2,10 +2,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.testng.Assert;
 
-import java.util.Arrays;
-
-import static org.junit.Assert.*;
-
 /**
  * Created by Ben Maxfield on 10/29/2015.
  */
