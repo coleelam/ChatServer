@@ -98,6 +98,36 @@ public class ChatServer {
      */
     public String parseRequest(String request) {
         // TODO: Replace the following code with the actual code
+        Scanner inRequest = new Scanner(request);
+        String command = null;
+        String param1 = null;
+        String param2 = null;
+        String param3 = null;
+        inRequest.useDelimiter("\t|\r|\n");
+        while (inRequest.hasNext()) {
+            command = inRequest.next();
+            if (inRequest.hasNext()) {
+                param1 = inRequest.next();
+            }
+            if (inRequest.hasNext()) {
+                param2 = inRequest.next();
+            }
+            if (inRequest.hasNext()) {
+                param3 = inRequest.next();
+            }
+        }
+        if (command.equals()) {
+
+        }
+        if (param1.equals()) {
+
+        }
+        if (param2.equals()) {
+
+        }
+        if (param3.equals()) {
+
+        }
         return request;
     }
 }
