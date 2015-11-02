@@ -1,6 +1,3 @@
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion.User;
-
 public class LaunchServer {
 
     /**

@@ -5,7 +5,9 @@ import java.util.Arrays;
  *
  *
  *
- * @author Ben Maxfield, 815
+ * @author Cole Elam, Benjamin Maxfield <(elamc@purdue.edu)> && <(bmaxfie@purdue.edu)>
+ *
+ * @lab 814 && 815
  *
  * @version 10/29/15
  */
@@ -44,13 +46,17 @@ public class CircularBuffer
         if (message == null)
             return;
 
-        buffer[current_index] = message;
+        if (message_count >= 9999)
+            message_count = 0;
+        else
+            message_count++;
+
+        buffer[current_index] = String.format("%04d) " + message, message_count);
 
         if (current_index >= buffer.length - 1)
             current_index = 0;
         else
             current_index++;
-        message_count++;
     }
 
     /**
@@ -93,7 +99,7 @@ public class CircularBuffer
     }
 
     // TESTs general functionality of CircularBuffer with debug writeout.
-    /*public static void main(String[] args)
+    public static void main(String[] args)
     {
         CircularBuffer buffer = new CircularBuffer(5);
         buffer.put("1");
@@ -105,6 +111,6 @@ public class CircularBuffer
         buffer.put("5");
         buffer.put("6");
         System.out.println(Arrays.toString(buffer.getNewest(3)));
-    }*/
+    }
 
 }

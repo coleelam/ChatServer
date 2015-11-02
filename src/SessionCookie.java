@@ -5,7 +5,9 @@ import java.util.ArrayList;
  *
  *
  *
- * @author Ben Maxfield, 815
+ * @author Cole Elam, Benjamin Maxfield <(elamc@purdue.edu)> && <(bmaxfie@purdue.edu)>
+ *
+ * @lab 814 && 815
  *
  * @version 11/01/15
  */
