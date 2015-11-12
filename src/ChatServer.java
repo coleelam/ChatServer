@@ -17,8 +17,12 @@ import java.util.*;
  */
 public class ChatServer {
 
-    public ChatServer(User[] users, int maxMessages) {
+    private User[] users;
+    private CircularBuffer messages;
 
+    public ChatServer(User[] users, int maxMessages) {
+        this.messages = new CircularBuffer(maxMessages);
+        this.users = users;
     }
 
     /**
@@ -96,7 +100,117 @@ public class ChatServer {
      * @return the server response
      */
     public String parseRequest(String request) {
-        // TODO: Replace the following code with the actual code
-        return request;
+
+        String response = null;
+        String[] parsed = request.split("\t|\r\n");
+
+        int errorCode = checkRequestValidity(parsed);
+
+        if (errorCode == -1)
+        // PERFORMS ACTIONS BASED ON COMMAND
+            switch(COMMANDS.valueOf(parsed[0]))
+            {
+                case ADD_USER:
+                    //addUser(parsed);
+                    break;
+                case USER_LOGIN:
+                    //loginUser(parsed);
+                    break;
+                case POST_MESSAGE:
+                    //postMessage(parsed);
+                    break;
+                case GET_MESSAGES:
+                    //getMessages(parsed);
+                    break;
+                default:
+                    break;
+            }
+        else
+            System.out.println(MessageFactory.makeErrorMessage(errorCode));
+
+        return response;
+    }
+    /**
+     *  Used in parseRequest() to perform initial validation of the user's request.
+     *
+     *  @param parsed - pre-split request into a String[] of exact length for command.
+     *
+     *  @return an error code for particular failed tests of the supplied String[] parsed.
+     *  @return -1 if no error code.
+     */
+    private int checkRequestValidity(String[] parsed)
+    {
+        int code = -1;
+
+        switch(COMMANDS.valueOf(parsed[0]))
+        {
+            // Checks for 3 parameters, param1 should be convertible to a long.
+            case ADD_USER:
+                try {
+                    Long.parseLong(parsed[1]);
+                    parsed[2].toString();
+                    parsed[3].toString();
+                } catch (NumberFormatException | IndexOutOfBoundsException e)
+                {   code = 10;  }
+                break;
+            // Checks for 2 parameters.
+            case USER_LOGIN:
+                try {
+                    parsed[1].toString();
+                    parsed[2].toString();
+                } catch (IndexOutOfBoundsException e)
+                {   code = 10;  }
+                break;
+            // Checks for 2 parameters, param1 should be convertible to a long.
+            case POST_MESSAGE:
+                try {
+                    Long.parseLong(parsed[1]);
+                    parsed[2].toString();
+                } catch (NumberFormatException | IndexOutOfBoundsException e)
+                {   code = 10;  }
+                break;
+            // Checks for 2 parameters, param1 should be convertible to a long. param2 should be convertible to an int.
+            case GET_MESSAGES:
+                try {
+                    Long.parseLong(parsed[1]);
+                    Integer.parseInt(parsed[2]);
+                } catch (NumberFormatException | IndexOutOfBoundsException e)
+                {   code = 10;  }
+                break;
+            default:
+                code = 11;
+                break;
+        }
+
+        return code;
+    }
+
+
+
+    /**
+     * enum COMMANDS:
+     *  Holds constants for user request commands (param0 in request).
+     *
+     *  Allows for cleaner code to be written when parsing request Strings.
+     *      Specifically, we now can use switch cases instead of elseifs.
+     */
+    public enum COMMANDS {
+        // VARS:
+        ADD_USER("ADD-USER"),
+        USER_LOGIN("USER-LOGIN"),
+        POST_MESSAGE("POST-MESSAGE"),
+        GET_MESSAGES("GET-MESSAGES");
+
+        private final String command;
+
+        COMMANDS(final String command)
+        {
+            this.command = command;
+        }
+        @Override
+        public String toString()
+        {
+            return command;
+        }
     }
 }
