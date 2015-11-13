@@ -23,6 +23,9 @@ public class SessionCookie
     private int timeout = -1;    // Overwriting
     private boolean uniqueID;
 
+    // TODO: REMOVE IDs ArrayList. All storage of UIDs will be through the users ArrayList -> SessionCookie instances.
+    //      Randomization of the UIDs must occur "outside" of the SessionCookie class, as the SessionCookie constructor
+    //      will be changed to accept (long id).
 
     public SessionCookie()
     {
