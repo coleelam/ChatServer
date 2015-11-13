@@ -340,9 +340,12 @@ public class ChatServer {
         String response = "FAILURE\t" + MessageFactory.FORMAT_COMMAND_ERROR + "\t" +
                 MessageFactory.makeErrorMessage(MessageFactory.FORMAT_COMMAND_ERROR,
                         "Invalid getMessages request") + "\r\n";
-        if (messageRequest.length >= 1) {
+
+        if (messageRequest.length >= 1)
+        {
             response = "SUCCESS\t";
-            for (int j = 0; j < messageRequest.length - 1; j++) {
+            for (int j = 0; j < messageRequest.length - 1; j++)
+            {
                 messageRequest[j] += "\t";
                 response += messageRequest[j];
             }
