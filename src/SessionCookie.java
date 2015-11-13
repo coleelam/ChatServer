@@ -53,12 +53,14 @@ public class SessionCookie
      */
     public boolean hasTimedOut()
     {
-        if (System.currentTimeMillis() < (last_update + TIMEOUT) ||
-                System.currentTimeMillis() < (last_update + timeout)) {
-            return true;
+
+        if (timeout != -1) {
+            if (System.currentTimeMillis() < (last_update + timeout)) {
+                return false;
+            }
         }
-        if (timeout != 1) {
-            return false;
+        else if (System.currentTimeMillis() < (last_update + TIMEOUT)) {
+            return true;
         }
         return false;
 
