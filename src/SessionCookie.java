@@ -16,9 +16,9 @@ public class SessionCookie
 {
     private static final int TIMEOUT = 300; // seconds. Default
 
-    private static ArrayList<Integer> IDs;   // List of all currently used identification numbers. (may need to be synchronized)
+    private static ArrayList<Long> IDs;   // List of all currently used identification numbers. (may need to be synchronized)
 
-    private int UID;    // Personal (unique) identification number
+    private long UID;    // Personal (unique) identification number
     private long last_update;   // seconds, using System.currentTimeMillis()
     private int timeout = -1;    // Overwriting
     private boolean uniqueID;
@@ -29,7 +29,7 @@ public class SessionCookie
         UID = 0;
         do {
             uniqueID = true;
-            UID = new Integer((int)((Math.random() * 999999) + 1));
+            UID = new Long((long)((Math.random() * 9999) + 1));
             for (int i = 0; i < IDs.size(); i++)
             {
                 if (IDs.get(i).equals(UID)) {
