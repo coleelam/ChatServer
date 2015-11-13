@@ -43,10 +43,17 @@ public class SessionCookieTest {
         Assert.assertEquals(c.hasTimedOut(), true);
     }
     @Test
-    public void testTimedOut6() throws InterruptedException
-    {
-        SessionCookie c = null;
-        Thread.sleep(1200);
-        Assert.assertEquals(c.hasTimedOut(), true);
+    public void testSessionCookieTimeOut() throws InterruptedException {
+          //change timeout interval to 1 second
+
+        SessionCookie cookie = new SessionCookie();
+
+        cookie.setTimeout(1);
+
+        System.out.println(cookie.hasTimedOut()); // should print false
+
+        Thread.sleep(1200); // Sleep for 1.2 seconds
+
+        System.out.println(cookie.hasTimedOut()); // should print true
     }
 }
