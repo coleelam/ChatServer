@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 
 /**
  * Project 4 -- ChatServer -- SessionCookie
@@ -16,20 +15,16 @@ public class SessionCookie
 {
     private static final int TIMEOUT = 300; // seconds. Default
 
-    private static ArrayList<Long> IDs;   // List of all currently used identification numbers. (may need to be synchronized)
-
     private long UID;    // Personal (unique) identification number
     private long last_update;   // seconds, using System.currentTimeMillis()
     private int timeout = -1;    // Overwriting
 
-    // TODO: REMOVE IDs ArrayList. All storage of UIDs will be through the users ArrayList -> SessionCookie instances.
     //      Randomization of the UIDs must occur "outside" of the SessionCookie class, as the SessionCookie constructor
     //      will be changed to accept (long id).
 
     public SessionCookie(long id)
     {
         this.UID = id;
-        IDs.add(UID);
 
         updateTimeOfActivity();
     }

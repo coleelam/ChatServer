@@ -360,7 +360,7 @@ public class ChatServer {
     private long generateRandomID()
     {
 
-        long id = new Long((long)((Math.random() * 9999) + 1));
+        long id = (long)((Math.random() * 9999) + 1);
         return id;
 
     }
