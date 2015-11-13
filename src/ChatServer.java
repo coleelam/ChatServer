@@ -17,12 +17,18 @@ import java.util.*;
  */
 public class ChatServer {
 
-    private User[] users;
+    private ArrayList<User> users;
     private CircularBuffer messages;
 
     public ChatServer(User[] users, int maxMessages) {
+        this.users = new ArrayList<>();
         this.messages = new CircularBuffer(maxMessages);
-        this.users = users;
+        
+        // Add contents of users[] passed in.
+        this.users.addAll(Arrays.asList(users));
+
+        // Add Default User ROOT:
+        this.users.add(new User("root", "cs180", new SessionCookie()));
     }
 
     /**
@@ -106,21 +112,23 @@ public class ChatServer {
 
         int errorCode = checkRequestValidity(parsed);
 
+        // CHECK COOKIES HERE:
+
         if (errorCode == -1)
         // PERFORMS ACTIONS BASED ON COMMAND
             switch(COMMANDS.valueOf(parsed[0]))
             {
                 case ADD_USER:
-                    //addUser(parsed);
+                    response = addUser(parsed);
                     break;
                 case USER_LOGIN:
-                    //loginUser(parsed);
+                    response = loginUser(parsed);
                     break;
                 case POST_MESSAGE:
-                    //postMessage(parsed);
+                    response = postMessage(parsed);
                     break;
                 case GET_MESSAGES:
-                    //getMessages(parsed);
+                    response = getMessages(parsed);
                     break;
                 default:
                     break;
@@ -151,7 +159,7 @@ public class ChatServer {
                     parsed[2].toString();
                     parsed[3].toString();
                 } catch (NumberFormatException | IndexOutOfBoundsException e)
-                {   code = 10;  }
+                {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
                 break;
             // Checks for 2 parameters.
             case USER_LOGIN:
@@ -159,7 +167,7 @@ public class ChatServer {
                     parsed[1].toString();
                     parsed[2].toString();
                 } catch (IndexOutOfBoundsException e)
-                {   code = 10;  }
+                {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
                 break;
             // Checks for 2 parameters, param1 should be convertible to a long.
             case POST_MESSAGE:
@@ -167,7 +175,7 @@ public class ChatServer {
                     Long.parseLong(parsed[1]);
                     parsed[2].toString();
                 } catch (NumberFormatException | IndexOutOfBoundsException e)
-                {   code = 10;  }
+                {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
                 break;
             // Checks for 2 parameters, param1 should be convertible to a long. param2 should be convertible to an int.
             case GET_MESSAGES:
@@ -175,10 +183,10 @@ public class ChatServer {
                     Long.parseLong(parsed[1]);
                     Integer.parseInt(parsed[2]);
                 } catch (NumberFormatException | IndexOutOfBoundsException e)
-                {   code = 10;  }
+                {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
                 break;
             default:
-                code = 11;
+                code = MessageFactory.UNKNOWN_COMMAND_ERROR;
                 break;
         }
 
@@ -213,4 +221,34 @@ public class ChatServer {
             return command;
         }
     }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////                          Command Methods:                          ////
+    ////////////////////////////////////////////////////////////////////////////
+
+    private String addUser(String[] parsed)
+    {
+
+        return "";
+    }
+
+    private String loginUser(String[] parsed)
+    {
+
+        return "";
+    }
+
+    private String postMessage(String[] parsed)
+    {
+
+        return "";
+    }
+
+    private String getMessages(String[] parsed)
+    {
+
+        return "";
+    }
+
 }
