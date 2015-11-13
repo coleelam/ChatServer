@@ -368,7 +368,7 @@ public class ChatServer {
     private long setUniqueID()
     {
 
-        boolean uniqueID = false;
+        boolean uniqueID;
         long cookieID;
 
         do {
