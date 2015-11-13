@@ -1,4 +1,6 @@
 
+import sun.plugin2.message.Message;
+
 import java.util.*;
 
 /**
@@ -26,10 +28,13 @@ public class ChatServer {
         
         // Add contents of users[] passed in.
         this.users.addAll(Arrays.asList(users));
+        Collections.sort(this.users, User.UserNameComparator);
 
         // Add Default User ROOT:
         // TODO: Update to new SessionCookie implementation w/ UID randomization.
-        this.users.add(new User("root", "cs180", null));
+        User root = new User("root", "cs180", null);
+        int index = Collections.binarySearch(this.users, root);
+        this.users.add(-index + 1, root);
     }
 
     /**
@@ -102,8 +107,7 @@ public class ChatServer {
      * Determines which client command the request is using and calls the
      * function associated with that command.
      *
-     * @param request
-     *            - the full line of the client request (CRLF included)
+     * @param request - the full line of the client request (CRLF included)
      * @return the server response
      */
     public String parseRequest(String request) {
@@ -241,24 +245,25 @@ public class ChatServer {
 
         // Checks:
         //      Usernames and passwords can only contain alphanumerical values [A-Za-z0-9].
-        for (String param : new String[]{parsed[2], parsed[3]})
+        for (String param : new String[]{parsed[1], parsed[2]})
             if (!param.matches("[A-Za-z0-9]"))
                 response = "FAILURE\t" + MessageFactory.USER_ERROR + "\t" +
-                        MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR);
+                        MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR) + "\r\n";
         // Checks:
         //      Usernames must be between 1 and 20 characters in length (inclusive).
         //      Password must be between 4 and 40 characters in length (inclusive).
-        if (parsed[2].length() < 1 || parsed[2].length() > 20
-                || parsed[3].length() < 4 || parsed[3].length() > 40)
+        if (parsed[1].length() < 1 || parsed[1].length() > 20
+                || parsed[2].length() < 4 || parsed[2].length() > 40)
             response = "FAILURE\t" + MessageFactory.USER_ERROR + "\t" +
-                    MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR);
+                    MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR) + "\r\n";
 
         // Finally:
         //      If this call passed the requirements... Add the User!
         if (response.equals("SUCCESS\r\n"))
         {
-            // TODO: Update to new SessionCookie implementation w/ UID randomization.
-            users.add(new User(parsed[2], parsed[3], null));
+            User newUser = new User(parsed[1], parsed[2], null);
+            int index = Collections.binarySearch(users, newUser);
+            users.add(-index + 1, newUser);
         }
 
         return response;
@@ -267,6 +272,41 @@ public class ChatServer {
     private String loginUser(String[] parsed)
     {
         String response = "SUCCESS\t";
+        boolean validPass = false;
+        boolean notLoggedIn = false;
+
+
+        // Check for: User Exists -> Correct Password -> Null SessionCookie.
+        User dummy = new User(parsed[1], parsed[2], null);
+        int index = Collections.binarySearch(users, dummy);
+        // If username EXISTS:
+        if (index >= 0)
+        {
+            // If CORRECT password:
+            if (users.get(index).checkPassword(parsed[2]))
+                validPass = true;
+            else
+                response = "FAILURE\t" + MessageFactory.AUTHENTICATION_ERROR + "\t" +
+                        MessageFactory.makeErrorMessage(MessageFactory.AUTHENTICATION_ERROR) + "\r\n";
+
+            // If NULL SessionCookie:
+            if (users.get(index).getCookie() == null && validPass)
+                notLoggedIn = true;
+            else
+                response = "FAILURE\t" + MessageFactory.USER_CONNECTED_ERROR + "\t" +
+                        MessageFactory.makeErrorMessage(MessageFactory.USER_CONNECTED_ERROR) + "\r\n";
+
+            // TODO: Update to new SessionCookie implmentation w/ UID reandomization.
+            // If ALL of the Above:
+            if (validPass && notLoggedIn) {
+                users.get(index).setCookie(null);
+                response += users.get(index).getCookie().getID() + "\r\n";
+            }
+        }
+        else
+            response = "FAILURE\t" + MessageFactory.USERNAME_LOOKUP_ERROR + "\t" +
+                    MessageFactory.makeErrorMessage(MessageFactory.USERNAME_LOOKUP_ERROR) + "\r\n";
+
 
         return response;
     }
