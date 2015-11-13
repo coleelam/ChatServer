@@ -1,3 +1,5 @@
+import java.util.Comparator;
+
 /**
  * Project 4 -- ChatServer -- User
  *
@@ -10,7 +12,7 @@
  * @version 11/01/15
  */
 
-public class User
+public class User implements Comparable<User>
 {
     private String username;
     private String password;
@@ -30,7 +32,10 @@ public class User
 
     public boolean checkPassword(String password)
     {
-        return false;
+        if (this.password.equals(password))
+            return true;
+        else
+            return false;
     }
 
     public SessionCookie getCookie()
@@ -40,6 +45,19 @@ public class User
 
     public void setCookie(SessionCookie cookie)
     {
-
+        this.cookie = cookie;
     }
+
+
+    @Override
+    public int compareTo(User user) {
+        return this.getName().compareTo(user.getName());
+    }
+
+    public static Comparator<User> UserNameComparator = new Comparator<User>() {
+        public int compare(User user1, User user2)
+        {
+            return user1.getName().compareTo(user2.getName());
+        }
+    };
 }
