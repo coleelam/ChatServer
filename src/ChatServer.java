@@ -31,7 +31,6 @@ public class ChatServer {
         Collections.sort(this.users, User.UserNameComparator);
 
         // Add Default User ROOT:
-        // TODO: Update to new SessionCookie implementation w/ UID randomization.
         User root = new User("root", "cs180", null);
         int index = Collections.binarySearch(this.users, root);
         this.users.add(-index + 1, root);
@@ -130,7 +129,7 @@ public class ChatServer {
                     response = loginUser(parsed);
                     break;
                 case POST_MESSAGE:
-                    response = postMessage(parsed);
+                    response = postMessage(parsed, findUsername(parsed[1]));
                     break;
                 case GET_MESSAGES:
                     response = getMessages(parsed);
@@ -196,6 +195,17 @@ public class ChatServer {
         }
 
         return code;
+    }
+
+    private String findUsername(String cookieID)
+    {
+        String username = null;
+
+        for(int i = 0; i < users.size(); i++)
+            if (users.get(i).getCookie().getID() == Long.parseLong(cookieID))
+                return users.get(i).getName();
+
+        return username;
     }
 
 
@@ -297,7 +307,6 @@ public class ChatServer {
                 response = "FAILURE\t" + MessageFactory.USER_CONNECTED_ERROR + "\t" +
                         MessageFactory.makeErrorMessage(MessageFactory.USER_CONNECTED_ERROR) + "\r\n";
 
-            // TODO: Update to new SessionCookie implementation w/ UID randomization.
             // If ALL of the Above:
             if (validPass && notLoggedIn) {
                 users.get(index).setCookie(new SessionCookie(setUniqueID()));
@@ -314,9 +323,14 @@ public class ChatServer {
 
     private String postMessage(String[] parsed, String name)
     {
-        String response = "FAILURE\t" + MessageFactory.FORMAT_COMMAND_ERROR + "\t" +
-                MessageFactory.makeErrorMessage(MessageFactory.FORMAT_COMMAND_ERROR,
-                        "Invalid message format.") + "\r\n";
+        String response = "FAILURE\t" + MessageFactory.INVALID_VALUE_ERROR + "\t" +
+                MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR,
+                        "Invalid message post format.") + "\r\n";
+
+        if (name == null)
+            response = "FAILURE\t" + MessageFactory.USERNAME_LOOKUP_ERROR + "\t" +
+                    MessageFactory.makeErrorMessage(MessageFactory.USERNAME_LOOKUP_ERROR);
+
         String message = null;
 
         //makes sure the trimmed string has a length greater than 1, so that blank messages can't be posted.
@@ -356,6 +370,11 @@ public class ChatServer {
 
         return response;
     }
+
+
+    ////////////////////////////////////////////////////////////////////
+    ////                 SessionCookieID Generation                 ////
+    ////////////////////////////////////////////////////////////////////
 
     private long generateRandomID()
     {
