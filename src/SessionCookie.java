@@ -21,12 +21,27 @@ public class SessionCookie
     private int UID;    // Personal (unique) identification number
     private long last_update;   // seconds, using System.currentTimeMillis()
     private int timeout = -1;    // Overwriting
+    private boolean uniqueID;
 
 
     public SessionCookie()
     {
-        UID = 0; // Change to check IDs for duplicate after generating Random.
-        IDs.add(new Integer(UID));
+        UID = 0;
+        do {
+            uniqueID = true;
+            UID = new Integer((int)((Math.random() * 999999) + 1));
+            for (int i = 0; i < IDs.size(); i++)
+            {
+                if (IDs.get(i).equals(UID)) {
+                    uniqueID = false;
+                    break;
+                }
+            }
+            if (uniqueID) {
+                IDs.add(UID);
+            }
+        } while (!uniqueID);
+
 
         updateTimeOfActivity();
     }
@@ -38,7 +53,15 @@ public class SessionCookie
      */
     public boolean hasTimedOut()
     {
+        if (System.currentTimeMillis() < (last_update + TIMEOUT) ||
+                System.currentTimeMillis() < (last_update + timeout)) {
+            return true;
+        }
+        if (timeout != 1) {
+            return false;
+        }
         return false;
+
     }
 
     public void updateTimeOfActivity()
