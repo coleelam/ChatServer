@@ -28,6 +28,7 @@ public class ChatServer {
         this.users.addAll(Arrays.asList(users));
 
         // Add Default User ROOT:
+        // TODO: Update to new SessionCookie implementation w/ UID randomization.
         this.users.add(new User("root", "cs180", new SessionCookie()));
     }
 
@@ -227,6 +228,13 @@ public class ChatServer {
     ////                          Command Methods:                          ////
     ////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Command method for ADD-USER command. Validates the parameters, checks for valid UID parameter, and if request
+     *  passes these, then adds a new User to users.
+     *
+     * @param parsed - pre-parsed semi-validated String[] request
+     * @return - properly formated response String.
+     */
     private String addUser(String[] parsed)
     {
         String response = "SUCCESS\r\n";
@@ -244,6 +252,14 @@ public class ChatServer {
                 || parsed[3].length() < 4 || parsed[3].length() > 40)
             response = "FAILURE\t" + MessageFactory.USER_ERROR + "\t" +
                     MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR);
+
+        // Finally:
+        //      If this call passed the requirements... Add the User!
+        if (response.equals("SUCCESS\r\n"))
+        {
+            // TODO: Update to new SessionCookie implmentation w/ UID reandomization.
+            users.add(new User(parsed[2], parsed[3], new SessionCookie()));
+        }
 
         return response;
     }
