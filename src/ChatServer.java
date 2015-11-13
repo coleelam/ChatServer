@@ -229,34 +229,44 @@ public class ChatServer {
 
     private String addUser(String[] parsed)
     {
-        //Usernames and passwords can only contain alphanumerical values [A-Za-z0-9].
+        String response = "SUCCESS\r\n";
+
+        // Checks:
+        //      Usernames and passwords can only contain alphanumerical values [A-Za-z0-9].
         for (String param : new String[]{parsed[2], parsed[3]})
-        {
-            
-        }
-        //Usernames must be between 1 and 20 characters in length (inclusive).
+            if (!param.matches("[A-Za-z0-9]"))
+                response = "FAILURE\t" + MessageFactory.USER_ERROR + "\t" +
+                        MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR);
+        // Checks:
+        //      Usernames must be between 1 and 20 characters in length (inclusive).
+        //      Password must be between 4 and 40 characters in length (inclusive).
+        if (parsed[2].length() < 1 || parsed[2].length() > 20
+                || parsed[3].length() < 4 || parsed[3].length() > 40)
+            response = "FAILURE\t" + MessageFactory.USER_ERROR + "\t" +
+                    MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR);
 
-        //Password must be between 4 and 40 characters in length (inclusive).
-
-        return "";
+        return response;
     }
 
     private String loginUser(String[] parsed)
     {
+        String response = "SUCCESS\t";
 
-        return "";
+        return response;
     }
 
     private String postMessage(String[] parsed)
     {
+        String response = "SUCCESS\r\n";
 
-        return "";
+        return response;
     }
 
     private String getMessages(String[] parsed)
     {
+        String response = "SUCCESS\t";
 
-        return "";
+        return response;
     }
 
 }
