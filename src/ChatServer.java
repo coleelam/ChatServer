@@ -229,6 +229,14 @@ public class ChatServer {
 
     private String addUser(String[] parsed)
     {
+        //Usernames and passwords can only contain alphanumerical values [A-Za-z0-9].
+        for (String param : new String[]{parsed[2], parsed[3]})
+        {
+            
+        }
+        //Usernames must be between 1 and 20 characters in length (inclusive).
+
+        //Password must be between 4 and 40 characters in length (inclusive).
 
         return "";
     }
