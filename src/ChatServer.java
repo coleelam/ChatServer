@@ -29,7 +29,7 @@ public class ChatServer {
 
         // Add Default User ROOT:
         // TODO: Update to new SessionCookie implementation w/ UID randomization.
-        this.users.add(new User("root", "cs180", new SessionCookie()));
+        this.users.add(new User("root", "cs180", null));
     }
 
     /**
@@ -257,8 +257,8 @@ public class ChatServer {
         //      If this call passed the requirements... Add the User!
         if (response.equals("SUCCESS\r\n"))
         {
-            // TODO: Update to new SessionCookie implmentation w/ UID reandomization.
-            users.add(new User(parsed[2], parsed[3], new SessionCookie()));
+            // TODO: Update to new SessionCookie implementation w/ UID randomization.
+            users.add(new User(parsed[2], parsed[3], null));
         }
 
         return response;
@@ -271,16 +271,41 @@ public class ChatServer {
         return response;
     }
 
-    private String postMessage(String[] parsed)
+    private String postMessage(String[] parsed, String name)
     {
-        String response = "SUCCESS\r\n";
+        String response = "FAILURE\t" + MessageFactory.FORMAT_COMMAND_ERROR + "\t" +
+                MessageFactory.makeErrorMessage(MessageFactory.FORMAT_COMMAND_ERROR, "Invalid message format.");
+        String message = null;
+
+        //makes sure the trimmed string has a length greater than 1, so that blank messages can't be posted.
+        if (parsed[2].trim().length() >= 1) {
+            message = name + ": " + parsed[2];
+            messages.put(message);
+            response = "SUCCESS\r\n";
+            return response;
+        }
 
         return response;
     }
 
     private String getMessages(String[] parsed)
     {
-        String response = "SUCCESS\t";
+
+        int numMessages = Integer.parseInt(parsed[2]);
+        String[] messageRequest = messages.getNewest(numMessages);
+
+        String response = "FAILURE\t" + MessageFactory.FORMAT_COMMAND_ERROR + "\t" +
+                MessageFactory.makeErrorMessage(MessageFactory.FORMAT_COMMAND_ERROR, "Invalid getMessages request");
+        if (messageRequest.length >= 1) {
+            response = "SUCCESS\t";
+            for (int i = 0; i < messageRequest.length - 1; i++)
+            {
+                messageRequest[i] += "\t";
+                response += messageRequest[i];
+            }
+            return response;
+        }
+
 
         return response;
     }

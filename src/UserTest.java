@@ -13,7 +13,7 @@ public class UserTest {
 
     @Before
     public void setUp() throws Exception {
-        u = new User("user", "pass1!", new SessionCookie());
+        u = new User("user", "pass1!", new SessionCookie(1111));
     }
 
     @Test

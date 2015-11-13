@@ -46,7 +46,7 @@ public class SessionCookieTest {
     public void testSessionCookieTimeOut() throws InterruptedException {
           //change timeout interval to 1 second
 
-        SessionCookie cookie = new SessionCookie();
+        SessionCookie cookie = new SessionCookie(0001);
 
         cookie.setTimeout(1);
 

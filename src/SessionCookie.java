@@ -27,9 +27,8 @@ public class SessionCookie
     //      Randomization of the UIDs must occur "outside" of the SessionCookie class, as the SessionCookie constructor
     //      will be changed to accept (long id).
 
-    public SessionCookie()
+    public SessionCookie(long id)
     {
-        UID = 0;
         do {
             uniqueID = true;
             UID = new Long((long)((Math.random() * 9999) + 1));
@@ -44,7 +43,7 @@ public class SessionCookie
                 IDs.add(UID);
             }
         } while (!uniqueID);
-
+        this.UID = id;
 
         updateTimeOfActivity();
     }

@@ -30,6 +30,9 @@ public class User
 
     public boolean checkPassword(String password)
     {
+        if (password.equals(this.password)) {
+            return true;
+        }
         return false;
     }
 
@@ -40,6 +43,6 @@ public class User
 
     public void setCookie(SessionCookie cookie)
     {
-
+        this.cookie = cookie;
     }
 }
