@@ -88,7 +88,7 @@ public class ChatServer {
      * Replaces "poorly formatted" escape characters with their proper values.
      * For some terminals, when escaped characters are entered, the terminal
      * includes the "\" as a character instead of entering the escape character.
-     * This function replaces the incorrectly inputed characters with their
+     * This function replaces the incorrectly inputted characters with their
      * proper escaped characters.
      *
      * @param str
@@ -296,7 +296,7 @@ public class ChatServer {
                 response = "FAILURE\t" + MessageFactory.USER_CONNECTED_ERROR + "\t" +
                         MessageFactory.makeErrorMessage(MessageFactory.USER_CONNECTED_ERROR) + "\r\n";
 
-            // TODO: Update to new SessionCookie implmentation w/ UID reandomization.
+            // TODO: Update to new SessionCookie implementation w/ UID randomization.
             // If ALL of the Above:
             if (validPass && notLoggedIn) {
                 users.get(index).setCookie(null);
@@ -314,7 +314,8 @@ public class ChatServer {
     private String postMessage(String[] parsed, String name)
     {
         String response = "FAILURE\t" + MessageFactory.FORMAT_COMMAND_ERROR + "\t" +
-                MessageFactory.makeErrorMessage(MessageFactory.FORMAT_COMMAND_ERROR, "Invalid message format.");
+                MessageFactory.makeErrorMessage(MessageFactory.FORMAT_COMMAND_ERROR,
+                        "Invalid message format.") + "\r\n";
         String message = null;
 
         //makes sure the trimmed string has a length greater than 1, so that blank messages can't be posted.
@@ -335,14 +336,15 @@ public class ChatServer {
         String[] messageRequest = messages.getNewest(numMessages);
 
         String response = "FAILURE\t" + MessageFactory.FORMAT_COMMAND_ERROR + "\t" +
-                MessageFactory.makeErrorMessage(MessageFactory.FORMAT_COMMAND_ERROR, "Invalid getMessages request");
+                MessageFactory.makeErrorMessage(MessageFactory.FORMAT_COMMAND_ERROR,
+                        "Invalid getMessages request") + "\r\n";
         if (messageRequest.length >= 1) {
             response = "SUCCESS\t";
-            for (int i = 0; i < messageRequest.length - 1; i++)
-            {
-                messageRequest[i] += "\t";
-                response += messageRequest[i];
+            for (int j = 0; j < messageRequest.length - 1; j++) {
+                messageRequest[j] += "\t";
+                response += messageRequest[j];
             }
+            response += messageRequest[messageRequest.length] + "\r\n";
             return response;
         }
 
