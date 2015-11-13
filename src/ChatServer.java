@@ -151,7 +151,7 @@ public class ChatServer {
                     parsed[2].toString();
                     parsed[3].toString();
                 } catch (NumberFormatException | IndexOutOfBoundsException e)
-                {   code = 10;  }
+                {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
                 break;
             // Checks for 2 parameters.
             case USER_LOGIN:
@@ -159,7 +159,7 @@ public class ChatServer {
                     parsed[1].toString();
                     parsed[2].toString();
                 } catch (IndexOutOfBoundsException e)
-                {   code = 10;  }
+                {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
                 break;
             // Checks for 2 parameters, param1 should be convertible to a long.
             case POST_MESSAGE:
@@ -167,7 +167,7 @@ public class ChatServer {
                     Long.parseLong(parsed[1]);
                     parsed[2].toString();
                 } catch (NumberFormatException | IndexOutOfBoundsException e)
-                {   code = 10;  }
+                {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
                 break;
             // Checks for 2 parameters, param1 should be convertible to a long. param2 should be convertible to an int.
             case GET_MESSAGES:
@@ -175,10 +175,10 @@ public class ChatServer {
                     Long.parseLong(parsed[1]);
                     Integer.parseInt(parsed[2]);
                 } catch (NumberFormatException | IndexOutOfBoundsException e)
-                {   code = 10;  }
+                {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
                 break;
             default:
-                code = 11;
+                code = MessageFactory.UNKNOWN_COMMAND_ERROR;
                 break;
         }
 
