@@ -207,7 +207,8 @@ public class ChatServer {
      *  Allows for cleaner code to be written when parsing request Strings.
      *      Specifically, we now can use switch cases instead of elseifs.
      */
-    public enum COMMANDS {
+    public enum COMMANDS
+    {
         // VARS:
         ADD_USER("ADD-USER"),
         USER_LOGIN("USER-LOGIN"),
@@ -261,7 +262,7 @@ public class ChatServer {
         //      If this call passed the requirements... Add the User!
         if (response.equals("SUCCESS\r\n"))
         {
-            User newUser = new User(parsed[1], parsed[2], null);
+            User newUser = new User(parsed[1], parsed[2], new SessionCookie(setUniqueID()));
             int index = Collections.binarySearch(users, newUser);
             users.add(-index + 1, newUser);
         }
@@ -299,7 +300,7 @@ public class ChatServer {
             // TODO: Update to new SessionCookie implementation w/ UID randomization.
             // If ALL of the Above:
             if (validPass && notLoggedIn) {
-                users.get(index).setCookie(null);
+                users.get(index).setCookie(new SessionCookie(setUniqueID()));
                 response += users.get(index).getCookie().getID() + "\r\n";
             }
         }
@@ -319,7 +320,8 @@ public class ChatServer {
         String message = null;
 
         //makes sure the trimmed string has a length greater than 1, so that blank messages can't be posted.
-        if (parsed[2].trim().length() >= 1) {
+        if (parsed[2].trim().length() >= 1)
+        {
             message = name + ": " + parsed[2];
             messages.put(message);
             response = "SUCCESS\r\n";
@@ -350,6 +352,38 @@ public class ChatServer {
 
 
         return response;
+    }
+
+    private long generateRandomID()
+    {
+
+        long id = new Long((long)((Math.random() * 9999) + 1));
+        return id;
+
+    }
+
+    private long setUniqueID()
+    {
+
+        boolean uniqueID = false;
+        long cookieID;
+
+        do {
+            uniqueID = true;
+            cookieID = generateRandomID();
+
+            for (User user : users)
+            {
+                if (user.getCookie().getID() == cookieID)
+                {
+                    uniqueID = false;
+                    break;
+                }
+
+            }
+        } while (!uniqueID);
+
+        return cookieID;
     }
 
 }

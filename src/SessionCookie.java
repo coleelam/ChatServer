@@ -21,7 +21,6 @@ public class SessionCookie
     private long UID;    // Personal (unique) identification number
     private long last_update;   // seconds, using System.currentTimeMillis()
     private int timeout = -1;    // Overwriting
-    private boolean uniqueID;
 
     // TODO: REMOVE IDs ArrayList. All storage of UIDs will be through the users ArrayList -> SessionCookie instances.
     //      Randomization of the UIDs must occur "outside" of the SessionCookie class, as the SessionCookie constructor
@@ -29,21 +28,8 @@ public class SessionCookie
 
     public SessionCookie(long id)
     {
-        do {
-            uniqueID = true;
-            UID = new Long((long)((Math.random() * 9999) + 1));
-            for (int i = 0; i < IDs.size(); i++)
-            {
-                if (IDs.get(i).equals(UID)) {
-                    uniqueID = false;
-                    break;
-                }
-            }
-            if (uniqueID) {
-                IDs.add(UID);
-            }
-        } while (!uniqueID);
         this.UID = id;
+        IDs.add(UID);
 
         updateTimeOfActivity();
     }
