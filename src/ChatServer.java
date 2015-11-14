@@ -29,7 +29,7 @@ public class ChatServer {
         Collections.sort(this.users, User.UserNameComparator);
 
         // Add Default User ROOT:
-        User root = new User("root", "cs180", null);
+        User root = new User("root", "cs180", new SessionCookie(0));
         int index = Collections.binarySearch(this.users, root);
         this.users.add(-index + 1, root);
     }
@@ -258,6 +258,7 @@ public class ChatServer {
             if (!param.matches("[A-Za-z0-9]"))
                 response = "FAILURE\t" + MessageFactory.USER_ERROR + "\t" +
                         MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR) + "\r\n";
+
         // Checks:
         //      Usernames must be between 1 and 20 characters in length (inclusive).
         //      Password must be between 4 and 40 characters in length (inclusive).
@@ -327,7 +328,7 @@ public class ChatServer {
 
         if (name == null)
             response = "FAILURE\t" + MessageFactory.USERNAME_LOOKUP_ERROR + "\t" +
-                    MessageFactory.makeErrorMessage(MessageFactory.USERNAME_LOOKUP_ERROR);
+                    MessageFactory.makeErrorMessage(MessageFactory.USERNAME_LOOKUP_ERROR) + "\r\n";
 
         String message = null;
 
