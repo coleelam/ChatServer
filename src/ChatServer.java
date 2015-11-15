@@ -198,7 +198,7 @@ public class ChatServer {
     /**
      * Looks through the users ArrayList (linearly) to find the User with the given cookieID. Returns that User's
      * username.
-     * 
+     *
      * @param cookieID - String that contains a valid Long, in the format of a SessionCookie UID.
      * @return - the username of the User with the cookieID, if cookieID is null or if User doesn't exist, returns null.
      */
