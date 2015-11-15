@@ -23,15 +23,22 @@ public class ChatServer {
     public ChatServer(User[] users, int maxMessages) {
         this.users = new ArrayList<>();
         this.messages = new CircularBuffer(maxMessages);
-        
+
+        User root = new User("root", "cs180", null);
+
         // Add contents of users[] passed in.
         this.users.addAll(Arrays.asList(users));
         Collections.sort(this.users, User.UserNameComparator);
 
-        // Add Default User ROOT:
-        User root = new User("root", "cs180", new SessionCookie(0));
-        int index = Collections.binarySearch(this.users, root);
-        this.users.add(-index + 1, root);
+        // Cannot binary search unless there's more than 1 User in this.users.
+        if (users.length > 0) {
+            // Add Default User ROOT:
+            int index = Collections.binarySearch(this.users, root);
+            this.users.add(-index + 1, root);
+        }
+        else
+            this.users.add(root);
+
     }
 
     /**
@@ -65,10 +72,12 @@ public class ChatServer {
             } catch (Exception ex) {
                 response = MessageFactory.makeErrorMessage(MessageFactory.UNKNOWN_ERROR,
                         String.format("An exception of %s occurred.", ex.getMessage()));
+                ex.printStackTrace();
             }
 
             // change the formatting of the server response so it prints well on
             // the terminal (for testing purposes only)
+            System.out.println("RAW RESPONSE: " + response);
             if (response.startsWith("SUCCESS\t"))
                 response = response.replace("\t", "\n");
 
@@ -152,7 +161,7 @@ public class ChatServer {
     {
         int code = -1;
 
-        switch(COMMANDS.valueOf(parsed[0]))
+        switch(COMMANDS.getCOMMAND(parsed[0]))
         {
             // Checks for 3 parameters, param1 should be convertible to a long.
             case ADD_USER:
@@ -228,22 +237,29 @@ public class ChatServer {
     public enum COMMANDS
     {
         // VARS:
-        ADD_USER("ADD-USER"),
-        USER_LOGIN("USER-LOGIN"),
-        POST_MESSAGE("POST-MESSAGE"),
-        GET_MESSAGES("GET-MESSAGES");
+        ADD_USER("ADD-USER", 0),
+        USER_LOGIN("USER-LOGIN", 1),
+        POST_MESSAGE("POST-MESSAGE", 2),
+        GET_MESSAGES("GET-MESSAGES", 3);
 
         private final String command;
+        public final int index;
 
-        COMMANDS(final String command)
+        COMMANDS(final String command, final int index)
         {
             this.command = command;
+            this.index = index;
         }
-        @Override
-        public String toString()
+        public static final COMMANDS getCOMMAND(String command)
         {
-            return command;
+            for (COMMANDS COMMAND : values()) {
+                System.out.println(COMMAND.command.equals(command));
+                if (COMMAND.command.equals(command))
+                    return COMMAND;
+            }
+            return null;
         }
+
     }
 
 
