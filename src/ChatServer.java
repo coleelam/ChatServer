@@ -12,7 +12,7 @@ import java.util.*;
  *
  * @lab 814 && 815
  *
- * @version 11/01/15
+ * @version 11/13/15
  *
  */
 public class ChatServer {
@@ -195,8 +195,18 @@ public class ChatServer {
         return code;
     }
 
+    /**
+     * Looks through the users ArrayList (linearly) to find the User with the given cookieID. Returns that User's
+     * username.
+     * 
+     * @param cookieID - String that contains a valid Long, in the format of a SessionCookie UID.
+     * @return - the username of the User with the cookieID, if cookieID is null or if User doesn't exist, returns null.
+     */
     private String findUsername(String cookieID)
     {
+        if (cookieID == null)
+            return null;
+
         String username = null;
 
         for(int i = 0; i < users.size(); i++)
