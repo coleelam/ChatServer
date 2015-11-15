@@ -77,7 +77,6 @@ public class ChatServer {
 
             // change the formatting of the server response so it prints well on
             // the terminal (for testing purposes only)
-            System.out.println("RAW RESPONSE: " + response);
             if (response.startsWith("SUCCESS\t"))
                 response = response.replace("\t", "\n");
 
@@ -161,7 +160,9 @@ public class ChatServer {
     {
         int code = -1;
 
-        switch(COMMANDS.getCOMMAND(parsed[0]))
+        // This replaces the dashes in the input commands to fit the enum names w/ underscores.
+        parsed[0] = parsed[0].replace('-', '_');
+        switch(COMMANDS.valueOf(parsed[0]))
         {
             // Checks for 3 parameters, param1 should be convertible to a long.
             case ADD_USER:
@@ -237,28 +238,10 @@ public class ChatServer {
     public enum COMMANDS
     {
         // VARS:
-        ADD_USER("ADD-USER", 0),
-        USER_LOGIN("USER-LOGIN", 1),
-        POST_MESSAGE("POST-MESSAGE", 2),
-        GET_MESSAGES("GET-MESSAGES", 3);
-
-        private final String command;
-        public final int index;
-
-        COMMANDS(final String command, final int index)
-        {
-            this.command = command;
-            this.index = index;
-        }
-        public static final COMMANDS getCOMMAND(String command)
-        {
-            for (COMMANDS COMMAND : values()) {
-                System.out.println(COMMAND.command.equals(command));
-                if (COMMAND.command.equals(command))
-                    return COMMAND;
-            }
-            return null;
-        }
+        ADD_USER,
+        USER_LOGIN,
+        POST_MESSAGE,
+        GET_MESSAGES
 
     }
 
@@ -421,7 +404,7 @@ public class ChatServer {
 
             for (User user : users)
             {
-                if (user.getCookie().getID() == cookieID)
+                if (user.getCookie() != null && user.getCookie().getID() == cookieID)
                 {
                     uniqueID = false;
                     break;
