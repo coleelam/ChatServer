@@ -128,7 +128,7 @@ public class ChatServer {
             switch(COMMANDS.valueOf(parsed[0]))
             {
                 case ADD_USER:
-                    thisUser = findUser(parsed[2]);
+                    thisUser = findUser(parsed[1]);
                     if (thisUser.getCookie().hasTimedOut())
                     {   response = userTimedOut(thisUser);  break;  }
                     response = addUser(parsed);
