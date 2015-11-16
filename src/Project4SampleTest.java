@@ -159,7 +159,7 @@ public class Project4SampleTest {
 		ChatServer chatServer = new ChatServer(users, 100);
 
 		String student = chatServer.userLogin(new String[] { "USER-LOGIN", "greg", "greg" });
-		assertTrue("ChatServer: 'userLogin' incorrect response format", student.endsWith("\r\n"));
+        assertTrue("ChatServer: 'userLogin' incorrect response format", student.endsWith("\r\n"));
 		assertTrue("ChatServer: 'userLogin' can not log in with a valid user", student.matches("SUCCESS\t\\d+\r\n"));
 	}
 
@@ -235,7 +235,6 @@ public class Project4SampleTest {
 		ChatServer chatServer = new ChatServer(users, 100);
 
 		String student = chatServer.parseRequest("ADD-USER\t42\tcs240\thereicome\tmoreparam\r\n");
-		System.out.println(student);
 		String msg = verifyErrorMessage(student, MessageFactory.FORMAT_COMMAND_ERROR);
 		assertTrue("parseRequest:" + msg, "".equals(msg));
 
@@ -328,12 +327,10 @@ public class Project4SampleTest {
 		SessionCookie.timeoutLength = 1;
 		Thread.sleep(800);
 		String student = chatServer.parseRequest("GET-MESSAGES\t42\t1\r\n");
-		System.out.println(student);
 		assertTrue("ChatServer: 'parseRequest' test failed because 'GET-MESSAGES' failed.",
 				student.startsWith("SUCCESS"));
 		Thread.sleep(400);
 		student = chatServer.parseRequest("GET-MESSAGES\t42\t0\r\n");
-		System.out.println(student);
 		String msg = verifyErrorMessage(student, MessageFactory.COOKIE_TIMEOUT_ERROR);
 		assertTrue("Check your Cookie Management:" + msg, "".equals(msg));
 	}

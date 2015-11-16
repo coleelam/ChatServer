@@ -38,7 +38,6 @@ public class ChatServer {
         else
             this.users.add(root);
 
-        //System.out.println("'root' Session UID: " + root.getCookie().getID());
     }
 
     /**
@@ -335,7 +334,7 @@ public class ChatServer {
         //      generated one!
         if (response.equals("SUCCESS\r\n"))
         {
-            User newUser = new User(parsed[2], parsed[3], new SessionCookie(Long.parseLong(parsed[1])));
+            User newUser = new User(parsed[2], parsed[3], null);
             if (users.size() > 1) {
                 int index = Collections.binarySearch(users, newUser);
                 // Checks:
@@ -390,7 +389,7 @@ public class ChatServer {
             // If ALL of the Above:
             if (validPass && notLoggedIn) {
                 users.get(index).setCookie(new SessionCookie(setUniqueID()));
-                response += users.get(index).getCookie().getID();
+                response += users.get(index).getCookie().getID() + "\r\n";
             }
         }
         else
