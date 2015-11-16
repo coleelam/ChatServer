@@ -10,7 +10,9 @@ public class SessionCookieTest {
     @Test
     public void testTimedOut1() throws InterruptedException
     {
-        SessionCookie c = null;
+        SessionCookie c = new SessionCookie((long) 0001);
+        c.setTimeout(1);
+        c.updateTimeOfActivity();
         Thread.sleep(1200);
         Assert.assertEquals(c.hasTimedOut(), true);
     }
