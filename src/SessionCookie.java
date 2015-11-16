@@ -36,10 +36,6 @@ public class SessionCookie
      */
     public boolean hasTimedOut()
     {
-
-        System.out.println((System.currentTimeMillis() / 1000.0) );
-        System.out.println((last_update + timeout));
-
         if (timeout != -1) {
             if ((System.currentTimeMillis() / 1000.0) < (last_update + timeout)) {
                 return false;
@@ -54,7 +50,7 @@ public class SessionCookie
 
     public void updateTimeOfActivity()
     {
-        last_update = System.currentTimeMillis() / 1000.0;
+        last_update = (System.currentTimeMillis() / 1000.0);
     }
 
     public long getID()
