@@ -359,19 +359,18 @@ public class ChatServer {
         int numMessages = Integer.parseInt(parsed[2]);
         String[] messageRequest = messages.getNewest(numMessages);
 
-        String response = "FAILURE\t" + MessageFactory.FORMAT_COMMAND_ERROR + "\t" +
-                MessageFactory.makeErrorMessage(MessageFactory.FORMAT_COMMAND_ERROR,
+        String response = "FAILURE\t" + MessageFactory.INVALID_VALUE_ERROR + "\t" +
+                MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR,
                         "Invalid getMessages request") + "\r\n";
 
-        if (messageRequest.length >= 1)
+        if (numMessages >= 1)
         {
-            response = "SUCCESS\t";
-            for (int j = 0; j < messageRequest.length - 1; j++)
+            response = "SUCCESS";
+            for (int j = 0; j < messageRequest.length; j++)
             {
-                messageRequest[j] += "\t";
-                response += messageRequest[j];
+                response += "\t" + messageRequest[j];
             }
-            response += messageRequest[messageRequest.length] + "\r\n";
+            response += "\r\n";
             return response;
         }
 
