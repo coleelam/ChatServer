@@ -128,7 +128,11 @@ public class ChatServer {
             switch(COMMANDS.valueOf(parsed[0]))
             {
                 case ADD_USER:
+                    thisUser = findUser(parsed[2]);
+                    if (thisUser.getCookie().hasTimedOut())
+                    {   response = userTimedOut(thisUser);  break;  }
                     response = addUser(parsed);
+                    thisUser.getCookie().updateTimeOfActivity();
                     break;
                 case USER_LOGIN:
                     response = loginUser(parsed);
@@ -141,11 +145,7 @@ public class ChatServer {
                     thisUser.getCookie().updateTimeOfActivity();
                     break;
                 case GET_MESSAGES:
-                    thisUser = findUser(parsed[1]);
-                    if (thisUser.getCookie().hasTimedOut())
-                    {   response = userTimedOut(thisUser);  break;  }
                     response = getMessages(parsed);
-                    thisUser.getCookie().updateTimeOfActivity();
                     break;
                 default:
                     break;
