@@ -1,3 +1,4 @@
+import org.codehaus.groovy.antlr.treewalker.SourceCodeTraversal;
 
 /**
  * Project 4 -- ChatServer -- SessionCookie
@@ -16,7 +17,7 @@ public class SessionCookie
     private static final int TIMEOUT = 300; // seconds. Default
 
     private long UID;    // Personal (unique) identification number
-    private long last_update;   // seconds, using System.currentTimeMillis()
+    private double last_update;   // seconds, using System.currentTimeMillis()
     private int timeout = -1;    // Overwriting
 
     //      Randomization of the UIDs must occur "outside" of the SessionCookie class, as the SessionCookie constructor
@@ -37,6 +38,9 @@ public class SessionCookie
     public boolean hasTimedOut()
     {
 
+        System.out.println((System.currentTimeMillis() / 1000.0) );
+        System.out.println((last_update + timeout));
+
         if (timeout != -1) {
             if ((System.currentTimeMillis() / 1000.0) < (last_update + timeout)) {
                 return false;
@@ -51,7 +55,7 @@ public class SessionCookie
 
     public void updateTimeOfActivity()
     {
-        last_update = (long) (System.currentTimeMillis() / 1000.0);
+        last_update = System.currentTimeMillis() / 1000.0;
     }
 
     public long getID()

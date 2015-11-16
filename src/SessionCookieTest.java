@@ -19,30 +19,47 @@ public class SessionCookieTest {
     @Test
     public void testTimedOut2() throws InterruptedException
     {
-        SessionCookie c = null;
-        Thread.sleep(1200);
+        SessionCookie c = new SessionCookie((long) 0001);
+        c.setTimeout(1);
+        c.updateTimeOfActivity();
+        Thread.sleep(1000);
         Assert.assertEquals(c.hasTimedOut(), true);
     }
     @Test
     public void testTimedOut3() throws InterruptedException
     {
-        SessionCookie c = null;
-        Thread.sleep(1200);
-        Assert.assertEquals(c.hasTimedOut(), true);
+        SessionCookie c = new SessionCookie((long) 0001);
+        c.setTimeout(1);
+        c.updateTimeOfActivity();
+        Thread.sleep(800);
+        Assert.assertEquals(c.hasTimedOut(), false);
     }
     @Test
     public void testTimedOut4() throws InterruptedException
     {
-        SessionCookie c = null;
-        Thread.sleep(1200);
+        SessionCookie c = new SessionCookie((long) 0001);
+        c.setTimeout(3);
+        c.updateTimeOfActivity();
+        Thread.sleep(3100);
         Assert.assertEquals(c.hasTimedOut(), true);
     }
     @Test
     public void testTimedOut5() throws InterruptedException
     {
-        SessionCookie c = null;
-        Thread.sleep(1200);
+        SessionCookie c = new SessionCookie((long) 0001);
+        c.setTimeout(30);
+        c.updateTimeOfActivity();
+        Thread.sleep(31000);
         Assert.assertEquals(c.hasTimedOut(), true);
+    }
+    @Test
+    public void testTimedOut6() throws InterruptedException
+    {
+        SessionCookie c = new SessionCookie((long) 0001);
+        c.setTimeout(30);
+        c.updateTimeOfActivity();
+        Thread.sleep(29000);
+        Assert.assertEquals(c.hasTimedOut(), false);
     }
     @Test
     public void testSessionCookieTimeOut() throws InterruptedException {
