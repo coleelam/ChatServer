@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 
 /**
@@ -60,4 +62,17 @@ public class User implements Comparable<User>
             return user1.getName().compareTo(user2.getName());
         }
     };
+
+
+    /*public static void main(String[] args)
+    {
+        ArrayList<Integer> numbers = new ArrayList<Integer>();
+        numbers.add(new Integer(1));
+        numbers.add(new Integer(2));
+        numbers.add(new Integer(3));
+        numbers.add(new Integer(4));
+        numbers.add(new Integer(5));
+        numbers.add(new Integer(6));
+        System.out.println(Collections.binarySearch(numbers, new Integer(3)));
+    }*/
 }

@@ -34,7 +34,7 @@ public class ChatServer {
         if (users.length > 0) {
             // Add Default User ROOT:
             int index = Collections.binarySearch(this.users, root);
-            this.users.add(-index + 1, root);
+            this.users.add(-index - 1, root);
         }
         else
             this.users.add(root);
@@ -309,7 +309,7 @@ public class ChatServer {
             User newUser = new User(parsed[2], parsed[3], new SessionCookie(Long.parseLong(parsed[1])));
             if (users.size() > 1) {
                 int index = Collections.binarySearch(users, newUser);
-                users.add(-index + 1, newUser);
+                users.add(-index - 1, newUser);
             }
             else
                 users.add(newUser);
