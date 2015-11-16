@@ -1,4 +1,3 @@
-import org.codehaus.groovy.antlr.treewalker.SourceCodeTraversal;
 
 /**
  * Project 4 -- ChatServer -- SessionCookie
