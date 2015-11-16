@@ -38,7 +38,7 @@ public class ChatServer {
         else
             this.users.add(root);
 
-        System.out.println("'root' Session UID: " + root.getCookie().getID());
+        //System.out.println("'root' Session UID: " + root.getCookie().getID());
     }
 
     /**
@@ -129,7 +129,11 @@ public class ChatServer {
             {
                 case ADD_USER:
                     thisUser = findUser(parsed[1]);
-                    if (thisUser.getCookie().hasTimedOut())
+                    if (thisUser == null) {
+                        response = MessageFactory.makeErrorMessage(MessageFactory.LOGIN_ERROR);
+                        break;
+                    }
+                    else if (thisUser.getCookie().hasTimedOut())
                     {   response = userTimedOut(thisUser);  break;  }
                     response = addUser(parsed);
                     thisUser.getCookie().updateTimeOfActivity();
@@ -139,12 +143,24 @@ public class ChatServer {
                     break;
                 case POST_MESSAGE:
                     thisUser = findUser(parsed[1]);
-                    if (thisUser.getCookie().hasTimedOut())
+                    if (thisUser == null) {
+                        response = MessageFactory.makeErrorMessage(MessageFactory.LOGIN_ERROR);
+                        break;
+                    }
+                    else if (thisUser.getCookie().hasTimedOut())
                     {   response = userTimedOut(thisUser);  break;  }
                     response = postMessage(parsed, findUsername(parsed[1]));
                     thisUser.getCookie().updateTimeOfActivity();
                     break;
                 case GET_MESSAGES:
+                    thisUser = findUser(parsed[1]);
+                    System.out.println(thisUser.getCookie().hasTimedOut());
+                    if (thisUser == null) {
+                        response = MessageFactory.makeErrorMessage(MessageFactory.LOGIN_ERROR);
+                        break;
+                    }
+                    else if (thisUser.getCookie().hasTimedOut())
+                    {   response = userTimedOut(thisUser);  break;  }
                     response = getMessages(parsed);
                     break;
                 default:
@@ -288,18 +304,16 @@ public class ChatServer {
         //      Usernames and passwords can only contain alphanumerical values [A-Za-z0-9].
         for (String param : new String[]{parsed[2], parsed[3]})
             if (!param.matches("[A-Za-z0-9]+"))
-                response = "FAILURE\t" + MessageFactory.USER_ERROR + "\t" +
-                        MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR, "the username or password does " +
-                                "not fit this regex: [A-Za-z0-9].") + "\r\n";
+                response = MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR, "the username or password does " +
+                                "not fit this regex: [A-Za-z0-9].");
 
         // Checks:
         //      Usernames must be between 1 and 20 characters in length (inclusive).
         //      Password must be between 4 and 40 characters in length (inclusive).
         if (parsed[2].length() < 1 || parsed[2].length() > 20
                 || parsed[3].length() < 4 || parsed[3].length() > 40)
-            response = "FAILURE\t" + MessageFactory.USER_ERROR + "\t" +
-                    MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR, "the username or password does not " +
-                            "fit the length requirements: 0 < username < 21 && 3 < password < 41.") + "\r\n";
+            response = MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR, "the username or password does not " +
+                            "fit the length requirements: 0 < username < 21 && 3 < password < 41.");
 
         // Finally:
         //      If this call passed the requirements... Add the User with specified CookieID or if not given, randomly
@@ -341,38 +355,33 @@ public class ChatServer {
             if (users.get(index).checkPassword(parsed[2]))
                 validPass = true;
             else
-                response = "FAILURE\t" + MessageFactory.AUTHENTICATION_ERROR + "\t" +
-                        MessageFactory.makeErrorMessage(MessageFactory.AUTHENTICATION_ERROR) + "\r\n";
+                response = MessageFactory.makeErrorMessage(MessageFactory.AUTHENTICATION_ERROR);
 
             // If NULL SessionCookie:
             if (users.get(index).getCookie() == null && validPass)
                 notLoggedIn = true;
             else
-                response = "FAILURE\t" + MessageFactory.USER_CONNECTED_ERROR + "\t" +
-                        MessageFactory.makeErrorMessage(MessageFactory.USER_CONNECTED_ERROR) + "\r\n";
+                response = MessageFactory.makeErrorMessage(MessageFactory.USER_CONNECTED_ERROR);
 
             // If ALL of the Above:
             if (validPass && notLoggedIn) {
                 users.get(index).setCookie(new SessionCookie(setUniqueID()));
-                response += users.get(index).getCookie().getID() + "\r\n";
+                response += users.get(index).getCookie().getID();
             }
         }
         else
-            response = "FAILURE\t" + MessageFactory.USERNAME_LOOKUP_ERROR + "\t" +
-                    MessageFactory.makeErrorMessage(MessageFactory.USERNAME_LOOKUP_ERROR) + "\r\n";
+            response = MessageFactory.makeErrorMessage(MessageFactory.USERNAME_LOOKUP_ERROR);
 
 
         return response;
     }
     public String postMessage(String[] parsed, String name)
     {
-        String response = "FAILURE\t" + MessageFactory.INVALID_VALUE_ERROR + "\t" +
-                MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR,
-                        "Invalid message post format.") + "\r\n";
+        String response = MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR,
+                        "Invalid message post format.");
 
         if (name == null)
-            response = "FAILURE\t" + MessageFactory.USERNAME_LOOKUP_ERROR + "\t" +
-                    MessageFactory.makeErrorMessage(MessageFactory.USERNAME_LOOKUP_ERROR) + "\r\n";
+            response = MessageFactory.makeErrorMessage(MessageFactory.USERNAME_LOOKUP_ERROR);
 
         String message = null;
 
@@ -394,11 +403,10 @@ public class ChatServer {
         int numMessages = Integer.parseInt(parsed[2]);
         String[] messageRequest = messages.getNewest(numMessages);
 
-        String response = "FAILURE\t" + MessageFactory.INVALID_VALUE_ERROR + "\t" +
-                MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR,
-                        "Invalid getMessages request") + "\r\n";
+        String response = MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR,
+                        "Invalid getMessages request");
 
-        if (numMessages >= 1)
+        if (numMessages >= 1 && messageRequest != null)
         {
             response = "SUCCESS";
             for (int j = 0; j < messageRequest.length; j++)
@@ -408,7 +416,6 @@ public class ChatServer {
             response += "\r\n";
             return response;
         }
-
 
         return response;
     }
@@ -453,8 +460,7 @@ public class ChatServer {
     private String userTimedOut(User user)
     {
         user.setCookie(null);
-        return "FAILURE\t" + MessageFactory.COOKIE_TIMEOUT_ERROR + "\t" +
-                MessageFactory.makeErrorMessage(MessageFactory.COOKIE_TIMEOUT_ERROR) + "\r\n";
+        return MessageFactory.makeErrorMessage(MessageFactory.COOKIE_TIMEOUT_ERROR);
     }
 
 }

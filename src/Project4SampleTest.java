@@ -327,10 +327,12 @@ public class Project4SampleTest {
 		SessionCookie.timeoutLength = 1;
 		Thread.sleep(800);
 		String student = chatServer.parseRequest("GET-MESSAGES\t42\t1\r\n");
+		System.out.println(student);
 		assertTrue("ChatServer: 'parseRequest' test failed because 'GET-MESSAGES' failed.",
 				student.startsWith("SUCCESS"));
 		Thread.sleep(400);
 		student = chatServer.parseRequest("GET-MESSAGES\t42\t0\r\n");
+		System.out.println(student);
 		String msg = verifyErrorMessage(student, MessageFactory.COOKIE_TIMEOUT_ERROR);
 		assertTrue("Check your Cookie Management:" + msg, "".equals(msg));
 	}

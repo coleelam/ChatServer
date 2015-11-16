@@ -68,9 +68,12 @@ public class CircularBuffer
      */
     public String[] getNewest(int numMessages)
     {
-        if (numMessages <= 0 || size <= 0 || (current_index == 0 && buffer[size - 1] == null)
-                             || (current_index != 0 && buffer[current_index - 1] == null))
+        if (numMessages < 0)
             return null;
+
+        if (numMessages == 0 || size <= 0 || message_count <= 0 || (current_index == 0 && buffer[size - 1] == null)
+                             || (current_index != 0 && buffer[current_index - 1] == null))
+            return new String[0];
 
         // Makes sure numMessages isn't more than the size of the buffer.
         numMessages = Math.min(numMessages, size);
