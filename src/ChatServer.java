@@ -122,8 +122,7 @@ public class ChatServer {
 
         int errorCode = checkRequestValidity(parsed);
 
-        // CHECK COOKIES HERE:
-
+        User thisUser;
         if (errorCode == -1)
         // PERFORMS ACTIONS BASED ON COMMAND
             switch(COMMANDS.valueOf(parsed[0]))
@@ -132,13 +131,25 @@ public class ChatServer {
                     response = addUser(parsed);
                     break;
                 case USER_LOGIN:
+                    thisUser = findUser(parsed[1]);
+                    if (thisUser.getCookie().hasTimedOut())
+                    {   response = userTimedOut(thisUser);  break;  }
                     response = loginUser(parsed);
+                    thisUser.getCookie().updateTimeOfActivity();
                     break;
                 case POST_MESSAGE:
+                    thisUser = findUser(parsed[1]);
+                    if (thisUser.getCookie().hasTimedOut())
+                    {   response = userTimedOut(thisUser);  break;  }
                     response = postMessage(parsed, findUsername(parsed[1]));
+                    thisUser.getCookie().updateTimeOfActivity();
                     break;
                 case GET_MESSAGES:
+                    thisUser = findUser(parsed[1]);
+                    if (thisUser.getCookie().hasTimedOut())
+                    {   response = userTimedOut(thisUser);  break;  }
                     response = getMessages(parsed);
+                    thisUser.getCookie().updateTimeOfActivity();
                     break;
                 default:
                     break;
@@ -217,13 +228,29 @@ public class ChatServer {
         if (cookieID == null)
             return null;
 
-        String username = null;
-
-        for(int i = 0; i < users.size(); i++)
+        for (int i = 0; i < users.size(); i++)
             if (users.get(i).getCookie().getID() == Long.parseLong(cookieID))
                 return users.get(i).getName();
 
-        return username;
+        return null;
+    }
+
+    /**
+     *  Looks through the users ArrayList (linearly) to find the User with the given cookieID. Returns that User.
+     *
+     *  @param cookieID - String that contains a valid Long, in the format of a SessionCookie UID.
+     *  @return - the User object that has the matching cookieID. If cookieID is null or if User doesn't exist, returns null;
+     */
+    private User findUser(String cookieID)
+    {
+        if (cookieID == null)
+            return null;
+
+        for (int i = 0; i < users.size(); i++)
+            if (users.get(i).getCookie().getID() == Long.parseLong(cookieID))
+                return users.get(i);
+
+        return null;
     }
 
 
@@ -263,7 +290,7 @@ public class ChatServer {
 
         // Checks:
         //      Usernames and passwords can only contain alphanumerical values [A-Za-z0-9].
-        for (String param : new String[]{parsed[1], parsed[2]})
+        for (String param : new String[]{parsed[2], parsed[3]})
             if (!param.matches("[A-Za-z0-9]"))
                 response = "FAILURE\t" + MessageFactory.USER_ERROR + "\t" +
                         MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR) + "\r\n";
@@ -271,16 +298,17 @@ public class ChatServer {
         // Checks:
         //      Usernames must be between 1 and 20 characters in length (inclusive).
         //      Password must be between 4 and 40 characters in length (inclusive).
-        if (parsed[1].length() < 1 || parsed[1].length() > 20
-                || parsed[2].length() < 4 || parsed[2].length() > 40)
+        if (parsed[2].length() < 1 || parsed[2].length() > 20
+                || parsed[3].length() < 4 || parsed[3].length() > 40)
             response = "FAILURE\t" + MessageFactory.USER_ERROR + "\t" +
                     MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR) + "\r\n";
 
         // Finally:
-        //      If this call passed the requirements... Add the User!
+        //      If this call passed the requirements... Add the User with specified CookieID or if not given, randomly
+        //      generated one!
         if (response.equals("SUCCESS\r\n"))
         {
-            User newUser = new User(parsed[1], parsed[2], new SessionCookie(setUniqueID()));
+            User newUser = new User(parsed[2], parsed[3], new SessionCookie(Long.parseLong(parsed[1])));
             int index = Collections.binarySearch(users, newUser);
             users.add(-index + 1, newUser);
         }
@@ -339,6 +367,8 @@ public class ChatServer {
             response = "FAILURE\t" + MessageFactory.USERNAME_LOOKUP_ERROR + "\t" +
                     MessageFactory.makeErrorMessage(MessageFactory.USERNAME_LOOKUP_ERROR) + "\r\n";
 
+        System.out.println("name: " + name);
+        System.out.println("mess: " + parsed[2]);
         String message = null;
 
         //makes sure the trimmed string has a length greater than 1, so that blank messages can't be posted.
@@ -347,6 +377,7 @@ public class ChatServer {
             message = name + ": " + parsed[2];
             messages.put(message);
             response = "SUCCESS\r\n";
+            System.out.println(messages.getMessageCount());
             return response;
         }
 
@@ -413,6 +444,13 @@ public class ChatServer {
         } while (!uniqueID);
 
         return cookieID;
+    }
+
+    private String userTimedOut(User user)
+    {
+        user.setCookie(null);
+        return "FAILURE\t" + MessageFactory.COOKIE_TIMEOUT_ERROR + "\t" +
+                MessageFactory.makeErrorMessage(MessageFactory.COOKIE_TIMEOUT_ERROR) + "\r\n";
     }
 
 }

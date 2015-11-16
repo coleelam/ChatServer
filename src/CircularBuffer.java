@@ -37,6 +37,8 @@ public class CircularBuffer
         message_count = 0;
     }
 
+    public int getMessageCount() {  return message_count;   }
+
     /**
      * Puts message in the circular loop and replaces the oldest message in the loop.
      * @param message - message to be stored in the buffer.
@@ -99,7 +101,7 @@ public class CircularBuffer
     }
 
     // TESTs general functionality of CircularBuffer with debug writeout.
-    public static void main(String[] args)
+    /*public static void main(String[] args)
     {
         CircularBuffer buffer = new CircularBuffer(5);
         buffer.put("1");
@@ -111,6 +113,6 @@ public class CircularBuffer
         buffer.put("5");
         buffer.put("6");
         System.out.println(Arrays.toString(buffer.getNewest(3)));
-    }
+    }*/
 
 }
