@@ -48,12 +48,12 @@ public class CircularBuffer
         if (message == null)
             return;
 
+        buffer[current_index] = String.format("%04d) " + message, message_count);
+
         if (message_count >= 9999)
             message_count = 0;
         else
             message_count++;
-
-        buffer[current_index] = String.format("%04d) " + message, message_count);
 
         if (current_index >= buffer.length - 1)
             current_index = 0;
