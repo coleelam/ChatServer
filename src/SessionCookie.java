@@ -45,6 +45,7 @@ public class SessionCookie
         else if (System.currentTimeMillis() < (last_update + TIMEOUT)) {
             return true;
         }
+        
         return false;
 
     }
