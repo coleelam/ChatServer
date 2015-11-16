@@ -13,7 +13,6 @@ import java.util.*;
  * @lab 814 && 815
  *
  * @version 11/13/15
- *
  */
 public class ChatServer {
 
@@ -39,6 +38,7 @@ public class ChatServer {
         else
             this.users.add(root);
 
+        System.out.println("'root' Session UID: " + root.getCookie().getID());
     }
 
     /**
@@ -135,7 +135,7 @@ public class ChatServer {
                     thisUser.getCookie().updateTimeOfActivity();
                     break;
                 case USER_LOGIN:
-                    response = loginUser(parsed);
+                    response = userLogin(parsed);
                     break;
                 case POST_MESSAGE:
                     thisUser = findUser(parsed[1]);
@@ -280,7 +280,7 @@ public class ChatServer {
      * @param parsed - pre-parsed semi-validated String[] request
      * @return - properly formated response String.
      */
-    private String addUser(String[] parsed)
+    public String addUser(String[] parsed)
     {
         String response = "SUCCESS\r\n";
 
@@ -318,7 +318,7 @@ public class ChatServer {
         return response;
     }
 
-    private String loginUser(String[] parsed)
+    public String userLogin(String[] parsed)
     {
         String response = "SUCCESS\t";
         boolean validPass = false;
@@ -364,8 +364,7 @@ public class ChatServer {
 
         return response;
     }
-
-    private String postMessage(String[] parsed, String name)
+    public String postMessage(String[] parsed, String name)
     {
         String response = "FAILURE\t" + MessageFactory.INVALID_VALUE_ERROR + "\t" +
                 MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR,
@@ -389,7 +388,7 @@ public class ChatServer {
         return response;
     }
 
-    private String getMessages(String[] parsed)
+    public String getMessages(String[] parsed)
     {
 
         int numMessages = Integer.parseInt(parsed[2]);

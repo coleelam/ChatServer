@@ -17,7 +17,7 @@ public class SessionCookie
 
     private long UID;    // Personal (unique) identification number
     private double last_update;   // seconds, using System.currentTimeMillis()
-    private int timeout = -1;    // Overwriting
+    public static int timeoutLength = -1;    // Overwriting, TODO: May want to be changed to private.
 
     //      Randomization of the UIDs must occur "outside" of the SessionCookie class, as the SessionCookie constructor
     //      will be changed to accept (long id).
@@ -30,14 +30,14 @@ public class SessionCookie
     }
 
     /**
-     * Compares last_update to current time to check if the cookie has timed out from TIMEOUT or timeout, depending on
-     *  if timeout != -1 (means TIMEOUT has not been overwritten).
-     * @return - true if current time is lower than last_update + TIMEOUT/timeout, false otherwise.
+     * Compares last_update to current time to check if the cookie has timed out from TIMEOUT or timeoutLength, depending on
+     *  if timeoutLength != -1 (means TIMEOUT has not been overwritten).
+     * @return - true if current time is lower than last_update + TIMEOUT/timeoutLength, false otherwise.
      */
     public boolean hasTimedOut()
     {
-        if (timeout != -1) {
-            if ((System.currentTimeMillis() / 1000.0) < (last_update + timeout)) {
+        if (timeoutLength != -1) {
+            if ((System.currentTimeMillis() / 1000.0) < (last_update + timeoutLength)) {
                 return false;
             }
         }
@@ -59,9 +59,9 @@ public class SessionCookie
     }
 
     /**
-     * Method lets you override the default timeout.
+     * Method lets you override the default timeoutLength.
      * Primarily used for debugging...
-     * @param timeout - timeout must be >= 1, seconds.
+     * @param timeout - timeoutLength must be >= 1, seconds.
      * @return - true if was able to override the default TIMEOUT, otherwise false.
      */
     public boolean setTimeout(int timeout)
@@ -69,7 +69,7 @@ public class SessionCookie
         if (timeout < 1)
             return false;
 
-        this.timeout = timeout;
+        this.timeoutLength = timeout;
         return true;
     }
 }
