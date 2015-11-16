@@ -38,16 +38,15 @@ public class SessionCookie
     {
 
         if (timeout != -1) {
-            if (System.currentTimeMillis() < (last_update + timeout)) {
+            if ((System.currentTimeMillis() / 1000.0) < (last_update + timeout)) {
                 return false;
             }
         }
-        else if (System.currentTimeMillis() < (last_update + TIMEOUT)) {
-            return true;
+        else if ((System.currentTimeMillis() / 1000.0) < (last_update + TIMEOUT)) {
+            return false;
         }
-        
-        return false;
 
+        return true;
     }
 
     public void updateTimeOfActivity()
