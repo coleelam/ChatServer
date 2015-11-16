@@ -235,6 +235,7 @@ public class Project4SampleTest {
 		ChatServer chatServer = new ChatServer(users, 100);
 
 		String student = chatServer.parseRequest("ADD-USER\t42\tcs240\thereicome\tmoreparam\r\n");
+		System.out.println(student);
 		String msg = verifyErrorMessage(student, MessageFactory.FORMAT_COMMAND_ERROR);
 		assertTrue("parseRequest:" + msg, "".equals(msg));
 

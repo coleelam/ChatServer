@@ -125,16 +125,16 @@ public class ChatServer {
         User thisUser;
         if (errorCode == -1)
         // PERFORMS ACTIONS BASED ON COMMAND
-            switch(COMMANDS.valueOf(parsed[0]))
-            {
+            switch (COMMANDS.valueOf(parsed[0])) {
                 case ADD_USER:
                     thisUser = findUser(parsed[1]);
                     if (thisUser == null) {
                         response = MessageFactory.makeErrorMessage(MessageFactory.LOGIN_ERROR);
                         break;
+                    } else if (thisUser.getCookie().hasTimedOut()) {
+                        response = userTimedOut(thisUser);
+                        break;
                     }
-                    else if (thisUser.getCookie().hasTimedOut())
-                    {   response = userTimedOut(thisUser);  break;  }
                     response = addUser(parsed);
                     thisUser.getCookie().updateTimeOfActivity();
                     break;
@@ -146,28 +146,29 @@ public class ChatServer {
                     if (thisUser == null) {
                         response = MessageFactory.makeErrorMessage(MessageFactory.LOGIN_ERROR);
                         break;
+                    } else if (thisUser.getCookie().hasTimedOut()) {
+                        response = userTimedOut(thisUser);
+                        break;
                     }
-                    else if (thisUser.getCookie().hasTimedOut())
-                    {   response = userTimedOut(thisUser);  break;  }
                     response = postMessage(parsed, findUsername(parsed[1]));
                     thisUser.getCookie().updateTimeOfActivity();
                     break;
                 case GET_MESSAGES:
                     thisUser = findUser(parsed[1]);
-                    System.out.println(thisUser.getCookie().hasTimedOut());
                     if (thisUser == null) {
                         response = MessageFactory.makeErrorMessage(MessageFactory.LOGIN_ERROR);
                         break;
+                    } else if (thisUser.getCookie().hasTimedOut()) {
+                        response = userTimedOut(thisUser);
+                        break;
                     }
-                    else if (thisUser.getCookie().hasTimedOut())
-                    {   response = userTimedOut(thisUser);  break;  }
                     response = getMessages(parsed);
                     break;
                 default:
                     break;
             }
         else
-            System.out.println(MessageFactory.makeErrorMessage(errorCode));
+            response = MessageFactory.makeErrorMessage(errorCode);
 
         return response;
     }
@@ -185,44 +186,58 @@ public class ChatServer {
 
         // This replaces the dashes in the input commands to fit the enum names w/ underscores.
         parsed[0] = parsed[0].replace('-', '_');
-        switch(COMMANDS.valueOf(parsed[0]))
+
+        try {
+            switch(COMMANDS.valueOf(parsed[0]))
+            {
+                // Checks for 3 parameters, param1 should be convertible to a long.
+                case ADD_USER:
+                    try {
+                        Long.parseLong(parsed[1]);
+                        parsed[2].toString();
+                        parsed[3].toString();
+                        if (parsed.length > 4)
+                            throw new NumberFormatException();
+                    } catch (NumberFormatException | IndexOutOfBoundsException e)
+                    {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
+                    break;
+                // Checks for 2 parameters.
+                case USER_LOGIN:
+                    try {
+                        parsed[1].toString();
+                        parsed[2].toString();
+                        if (parsed.length > 3)
+                            throw new IndexOutOfBoundsException();
+                    } catch (IndexOutOfBoundsException e)
+                    {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
+                    break;
+                // Checks for 2 parameters, param1 should be convertible to a long.
+                case POST_MESSAGE:
+                    try {
+                        Long.parseLong(parsed[1]);
+                        parsed[2].toString();
+                        if (parsed.length > 3)
+                            throw new NumberFormatException();
+                    } catch (NumberFormatException | IndexOutOfBoundsException e)
+                    {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
+                    break;
+                // Checks for 2 parameters, param1 should be convertible to a long. param2 should be convertible to an int.
+                case GET_MESSAGES:
+                    try {
+                        Long.parseLong(parsed[1]);
+                        Integer.parseInt(parsed[2]);
+                        if (parsed.length > 3)
+                            throw new NumberFormatException();
+                    } catch (NumberFormatException | IndexOutOfBoundsException e)
+                    {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
+                    break;
+                default:
+                    code = MessageFactory.UNKNOWN_COMMAND_ERROR;
+                    break;
+            }
+        } catch (IllegalArgumentException iae)
         {
-            // Checks for 3 parameters, param1 should be convertible to a long.
-            case ADD_USER:
-                try {
-                    Long.parseLong(parsed[1]);
-                    parsed[2].toString();
-                    parsed[3].toString();
-                } catch (NumberFormatException | IndexOutOfBoundsException e)
-                {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
-                break;
-            // Checks for 2 parameters.
-            case USER_LOGIN:
-                try {
-                    parsed[1].toString();
-                    parsed[2].toString();
-                } catch (IndexOutOfBoundsException e)
-                {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
-                break;
-            // Checks for 2 parameters, param1 should be convertible to a long.
-            case POST_MESSAGE:
-                try {
-                    Long.parseLong(parsed[1]);
-                    parsed[2].toString();
-                } catch (NumberFormatException | IndexOutOfBoundsException e)
-                {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
-                break;
-            // Checks for 2 parameters, param1 should be convertible to a long. param2 should be convertible to an int.
-            case GET_MESSAGES:
-                try {
-                    Long.parseLong(parsed[1]);
-                    Integer.parseInt(parsed[2]);
-                } catch (NumberFormatException | IndexOutOfBoundsException e)
-                {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
-                break;
-            default:
-                code = MessageFactory.UNKNOWN_COMMAND_ERROR;
-                break;
+            code = MessageFactory.UNKNOWN_COMMAND_ERROR;
         }
 
         return code;
@@ -304,7 +319,7 @@ public class ChatServer {
         //      Usernames and passwords can only contain alphanumerical values [A-Za-z0-9].
         for (String param : new String[]{parsed[2], parsed[3]})
             if (!param.matches("[A-Za-z0-9]+"))
-                response = MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR, "the username or password does " +
+                response = MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR, "the username or password does " +
                                 "not fit this regex: [A-Za-z0-9].");
 
         // Checks:
@@ -312,7 +327,7 @@ public class ChatServer {
         //      Password must be between 4 and 40 characters in length (inclusive).
         if (parsed[2].length() < 1 || parsed[2].length() > 20
                 || parsed[3].length() < 4 || parsed[3].length() > 40)
-            response = MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR, "the username or password does not " +
+            response = MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR, "the username or password does not " +
                             "fit the length requirements: 0 < username < 21 && 3 < password < 41.");
 
         // Finally:
@@ -323,10 +338,19 @@ public class ChatServer {
             User newUser = new User(parsed[2], parsed[3], new SessionCookie(Long.parseLong(parsed[1])));
             if (users.size() > 1) {
                 int index = Collections.binarySearch(users, newUser);
-                users.add(-index - 1, newUser);
+                // Checks:
+                //      Username doesn't already exist.
+                if (index >= 0)
+                    response = MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR);
+                else
+                    users.add(-index - 1, newUser);
             }
-            else
+            else {
+                for (int i = 0; i < users.size(); i++)
+                    if (users.get(i).getName().equals(parsed[2]))   // Make sure nothing is supposed to happen after this return...
+                        return MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR);
                 users.add(newUser);
+            }
         }
 
         return response;
