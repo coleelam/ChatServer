@@ -198,7 +198,7 @@ public class ChatServer {
                         if (parsed.length > 4)
                             throw new NumberFormatException();
                     } catch (NumberFormatException | IndexOutOfBoundsException e)
-                    {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
+                    {   return MessageFactory.FORMAT_COMMAND_ERROR;  }
                     break;
                 // Checks for 2 parameters.
                 case USER_LOGIN:
@@ -208,7 +208,7 @@ public class ChatServer {
                         if (parsed.length > 3)
                             throw new IndexOutOfBoundsException();
                     } catch (IndexOutOfBoundsException e)
-                    {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
+                    {   return MessageFactory.INVALID_VALUE_ERROR;  }
                     break;
                 // Checks for 2 parameters, param1 should be convertible to a long.
                 case POST_MESSAGE:
@@ -218,7 +218,7 @@ public class ChatServer {
                         if (parsed.length > 3)
                             throw new NumberFormatException();
                     } catch (NumberFormatException | IndexOutOfBoundsException e)
-                    {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
+                    {   return MessageFactory.FORMAT_COMMAND_ERROR;  }
                     break;
                 // Checks for 2 parameters, param1 should be convertible to a long.
                 // param2 should be convertible to an int.
@@ -229,7 +229,7 @@ public class ChatServer {
                         if (parsed.length > 3)
                             throw new NumberFormatException();
                     } catch (NumberFormatException | IndexOutOfBoundsException e)
-                    {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
+                    {   return MessageFactory.FORMAT_COMMAND_ERROR;  }
                     break;
                 default:
                     code = MessageFactory.UNKNOWN_COMMAND_ERROR;
@@ -320,7 +320,7 @@ public class ChatServer {
         //      Usernames and passwords can only contain alphanumerical values [A-Za-z0-9].
         for (String param : new String[]{parsed[2], parsed[3]})
             if (!param.matches("[A-Za-z0-9]+"))
-                response = MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR,
+                return MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR,
                         "the username or password does " +
                                 "not fit this regex: [A-Za-z0-9].");
 
@@ -329,7 +329,7 @@ public class ChatServer {
         //      Password must be between 4 and 40 characters in length (inclusive).
         if (parsed[2].length() < 1 || parsed[2].length() > 20
                 || parsed[3].length() < 4 || parsed[3].length() > 40)
-            response = MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR,
+            return MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR,
                     "the username or password does not " +
                             "fit the length requirements: 0 < username < 21 && 3 < password < 41.");
 
@@ -344,7 +344,7 @@ public class ChatServer {
                 // Checks:
                 //      Username doesn't already exist.
                 if (index >= 0)
-                    response = MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR);
+                    return MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR);
                 else {
                     users.add(-index - 1, newUser);
                     Collections.sort(users);
@@ -414,7 +414,7 @@ public class ChatServer {
                         "Invalid message post format.");
 
         if (name == null)
-            response = MessageFactory.makeErrorMessage(MessageFactory.USERNAME_LOOKUP_ERROR);
+            return MessageFactory.makeErrorMessage(MessageFactory.USERNAME_LOOKUP_ERROR);
 
         String message = null;
 
