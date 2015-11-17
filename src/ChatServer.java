@@ -197,8 +197,10 @@ public class ChatServer {
                         parsed[3].toString();
                         if (parsed.length > 4)
                             throw new NumberFormatException();
-                    } catch (NumberFormatException | IndexOutOfBoundsException e)
-                    {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
+                    } catch (NumberFormatException e)
+                    {   code = MessageFactory.INVALID_VALUE_ERROR;  }
+                    catch (IndexOutOfBoundsException e)
+                    {   code = MessageFactory.FORMAT_COMMAND_ERROR; }
                     break;
                 // Checks for 2 parameters.
                 case USER_LOGIN:
@@ -217,8 +219,10 @@ public class ChatServer {
                         parsed[2].toString();
                         if (parsed.length > 3)
                             throw new NumberFormatException();
-                    } catch (NumberFormatException | IndexOutOfBoundsException e)
-                    {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
+                    } catch (NumberFormatException e)
+                    {   code = MessageFactory.INVALID_VALUE_ERROR;  }
+                    catch (IndexOutOfBoundsException e)
+                    {   code = MessageFactory.FORMAT_COMMAND_ERROR; }
                     break;
                 // Checks for 2 parameters, param1 should be convertible to a long.
                 // param2 should be convertible to an int.
@@ -228,8 +232,10 @@ public class ChatServer {
                         Integer.parseInt(parsed[2]);
                         if (parsed.length > 3)
                             throw new NumberFormatException();
-                    } catch (NumberFormatException | IndexOutOfBoundsException e)
-                    {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
+                    } catch (NumberFormatException e)
+                    {   code = MessageFactory.INVALID_VALUE_ERROR;  }
+                    catch (IndexOutOfBoundsException e)
+                    {   code = MessageFactory.FORMAT_COMMAND_ERROR; }
                     break;
                 default:
                     code = MessageFactory.UNKNOWN_COMMAND_ERROR;
@@ -388,7 +394,7 @@ public class ChatServer {
             if (users.get(index).checkPassword(parsed[2]))
                 validPass = true;
             else
-                response = MessageFactory.makeErrorMessage(MessageFactory.AUTHENTICATION_ERROR);
+                return MessageFactory.makeErrorMessage(MessageFactory.AUTHENTICATION_ERROR);
 
             // If NULL SessionCookie:
             if (users.get(index).getCookie() == null && validPass)
@@ -443,7 +449,7 @@ public class ChatServer {
         } catch (NumberFormatException e) {
 
             return response;
-            
+
         }
 
         String[] messageRequest = messages.getNewest(numMessages);
