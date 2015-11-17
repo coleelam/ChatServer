@@ -441,7 +441,9 @@ public class ChatServer {
             numMessages = Integer.parseInt(parsed[2]);
 
         } catch (NumberFormatException e) {
+
             return response;
+            
         }
 
         String[] messageRequest = messages.getNewest(numMessages);
