@@ -345,8 +345,10 @@ public class ChatServer {
                 //      Username doesn't already exist.
                 if (index >= 0)
                     response = MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR);
-                else
+                else {
                     users.add(-index - 1, newUser);
+                    Collections.sort(users);
+                }
             }
             else {
                 for (int i = 0; i < users.size(); i++)
@@ -354,6 +356,7 @@ public class ChatServer {
                     if (users.get(i).getName().equals(parsed[2]))
                         return MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR);
                 users.add(newUser);
+                Collections.sort(users);
             }
         }
 
@@ -372,7 +375,6 @@ public class ChatServer {
         User dummy = new User(parsed[1], parsed[2], null);
         if (users.size() > 1)
         {
-            Collections.sort(users);
             index = Collections.binarySearch(users, dummy);
         }
         else
