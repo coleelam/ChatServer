@@ -186,6 +186,8 @@ public class ChatServer {
         // This replaces the dashes in the input commands to fit the enum names w/ underscores.
         parsed[0] = parsed[0].replace('-', '_');
 
+        System.out.println(Arrays.toString(parsed));
+
         try {
             switch(COMMANDS.valueOf(parsed[0]))
             {
@@ -204,21 +206,27 @@ public class ChatServer {
                 case USER_LOGIN:
                     try {
                         parsed[1].toString();
+                        if (parsed[2].toString() == null)
                         parsed[2].toString();
                         if (parsed.length > 3)
                             throw new IndexOutOfBoundsException();
                     } catch (IndexOutOfBoundsException e)
-                    {   return MessageFactory.INVALID_VALUE_ERROR;  }
+                    {   return MessageFactory.FORMAT_COMMAND_ERROR;  }
                     break;
                 // Checks for 2 parameters, param1 should be convertible to a long.
                 case POST_MESSAGE:
                     try {
                         Long.parseLong(parsed[1]);
-                        parsed[2].toString();
+                        if (parsed[2] == null)
+                            throw new NullPointerException();
                         if (parsed.length > 3)
                             throw new NumberFormatException();
                     } catch (NumberFormatException | IndexOutOfBoundsException e)
                     {   return MessageFactory.FORMAT_COMMAND_ERROR;  }
+                    catch (NullPointerException sioobe)
+                    {
+                        return MessageFactory.INVALID_VALUE_ERROR;
+                    }
                     break;
                 // Checks for 2 parameters, param1 should be convertible to a long.
                 // param2 should be convertible to an int.
