@@ -364,13 +364,13 @@ public class ChatServer {
 
         // Check for: User Exists -> Correct Password -> Null SessionCookie.
         int index = -1;
-        User dummy = new User(parsed[1], parsed[2], null);
-        if (users.size() > 1)
-            index = Collections.binarySearch(users, dummy);
-        else
-            for (int i = 0; i < users.size(); i++)
-                if (users.get(i).getName().equals(parsed[1]))
-                    index = i;
+        // User dummy = new User(parsed[1], parsed[2], null);
+        // if (users.size() > 1)
+        //     index = Collections.binarySearch(users, dummy);
+        // else
+        for (int i = 0; i < users.size(); i++)
+            if (users.get(i).getName().equals(parsed[1]))
+                index = i;
         // If username EXISTS:
         if (index >= 0)
         {
