@@ -206,7 +206,6 @@ public class ChatServer {
                 case USER_LOGIN:
                     try {
                         parsed[1].toString();
-                        if (parsed[2].toString() == null)
                         parsed[2].toString();
                         if (parsed.length > 3)
                             throw new IndexOutOfBoundsException();
@@ -217,13 +216,12 @@ public class ChatServer {
                 case POST_MESSAGE:
                     try {
                         Long.parseLong(parsed[1]);
-                        if (parsed[2] == null)
-                            throw new NullPointerException();
+                        parsed[2].toString();
                         if (parsed.length > 3)
                             throw new NumberFormatException();
-                    } catch (NumberFormatException | IndexOutOfBoundsException e)
+                    } catch (NumberFormatException nfe)
                     {   return MessageFactory.FORMAT_COMMAND_ERROR;  }
-                    catch (NullPointerException sioobe)
+                    catch (IndexOutOfBoundsException ioobe)
                     {
                         return MessageFactory.INVALID_VALUE_ERROR;
                     }
