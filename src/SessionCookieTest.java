@@ -3,7 +3,7 @@ import org.junit.Test;
 
 
 /**
- * Created by Ben Maxfield on 11/1/2015.
+ * Created by Ben Maxfield and Cole Elam on 11/1/2015.
  */
 public class SessionCookieTest {
 

@@ -1,25 +1,40 @@
 import static org.junit.Assert.*;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.jws.soap.SOAPBinding;
 
 /**
  * <b> CS 180 - Project 4 - Chat Server Test Samples </b>
  * <p>
  *
  *
- * @author (Your Name) <(YourEmail@purdue.edu)>
+ * @author Cole Elam and Benjamin Maxfield <(elamc@purdue.edu)> <(bmaxfie@purdue.edu)>
  *
- * @lab (Your Lab Section)
+ * @lab 814 and 815
  *
- * @version (Today's Date)
+ * @version 11/16/15
  *
  */
 public class Project4SampleTest {
 
+	User u = null;
+	CircularBuffer buffer;
+
 	@Before
 	public void setUp() {
 		SessionCookie.timeoutLength = 300;
+
+		u = new User("user", "pass1!", new SessionCookie(1111));
+
+		buffer = new CircularBuffer(4);
+		buffer.put("first");
+		buffer.put("second");
+		buffer.put("third");
+		buffer.put("fourth");
+
 	}
 
 	// Auxilary function
@@ -65,7 +80,74 @@ public class Project4SampleTest {
 	 *
 	 ********************************************************************************************************/
 
-	// TODO you should write some tests
+	@Test
+	public void testTimedOut1() throws InterruptedException
+	{
+		SessionCookie c = new SessionCookie((long) 0001);
+		c.setTimeout(1);
+		c.updateTimeOfActivity();
+		Thread.sleep(1200);
+		Assert.assertEquals(c.hasTimedOut(), true);
+	}
+	@Test
+	public void testTimedOut2() throws InterruptedException
+	{
+		SessionCookie c = new SessionCookie((long) 0001);
+		c.setTimeout(1);
+		c.updateTimeOfActivity();
+		Thread.sleep(1000);
+		Assert.assertEquals(c.hasTimedOut(), true);
+	}
+	@Test
+	public void testTimedOut3() throws InterruptedException
+	{
+		SessionCookie c = new SessionCookie((long) 0001);
+		c.setTimeout(1);
+		c.updateTimeOfActivity();
+		Thread.sleep(800);
+		Assert.assertEquals(c.hasTimedOut(), false);
+	}
+	@Test
+	public void testTimedOut4() throws InterruptedException
+	{
+		SessionCookie c = new SessionCookie((long) 0001);
+		c.setTimeout(3);
+		c.updateTimeOfActivity();
+		Thread.sleep(3100);
+		Assert.assertEquals(c.hasTimedOut(), true);
+	}
+	@Test
+	public void testTimedOut5() throws InterruptedException
+	{
+		SessionCookie c = new SessionCookie((long) 0001);
+		c.setTimeout(30);
+		c.updateTimeOfActivity();
+		Thread.sleep(31000);
+		Assert.assertEquals(c.hasTimedOut(), true);
+	}
+	@Test
+	public void testTimedOut6() throws InterruptedException
+	{
+		SessionCookie c = new SessionCookie((long) 0001);
+		c.setTimeout(30);
+		c.updateTimeOfActivity();
+		Thread.sleep(29000);
+		Assert.assertEquals(c.hasTimedOut(), false);
+	}
+	@Test
+	public void testSessionCookieTimeOut() throws InterruptedException {
+		//change timeout interval to 1 second
+
+		SessionCookie cookie = new SessionCookie(0001);
+
+		cookie.setTimeout(1);
+
+		System.out.println(cookie.hasTimedOut()); // should print false
+
+		Thread.sleep(1200); // Sleep for 1.2 seconds
+
+		System.out.println(cookie.hasTimedOut()); // should print true
+	}
 
 	/********************************************************************************************************
 	 *
@@ -73,7 +155,39 @@ public class Project4SampleTest {
 	 *
 	 ********************************************************************************************************/
 
-	// TODO you should write some tests
+	@Test
+	public void test1() throws Exception {
+		Assert.assertEquals(buffer.getNewest(1)[0], "fourth");
+	}
+	@Test
+	public void test2() throws Exception {
+		String[] expected = {"second", "third", "fourth"};
+		Assert.assertArrayEquals(buffer.getNewest(3), expected);
+	}
+	@Test
+	public void test3() throws Exception {
+		buffer.put("fifth");
+		String[] expected = {"fourth", "fifth"};
+		Assert.assertArrayEquals(buffer.getNewest(2), expected);
+	}
+	@Test
+	public void test4() throws Exception {
+		CircularBuffer trash = new CircularBuffer(0);
+		Assert.assertArrayEquals(trash.getNewest(1), null);
+	}
+	@Test
+	public void test5() throws Exception {
+		CircularBuffer trash = new CircularBuffer(1);
+		Assert.assertArrayEquals(trash.getNewest(1), null);
+	}
+	@Test
+	public void test6() throws Exception {
+		CircularBuffer trash = new CircularBuffer(1);
+		trash.put("bad");
+		trash.put("good");
+		String[] expected = {"good"};
+		Assert.assertArrayEquals(trash.getNewest(2), expected);
+	}
 
 	/********************************************************************************************************
 	 *
@@ -81,7 +195,41 @@ public class Project4SampleTest {
 	 *
 	 ********************************************************************************************************/
 
-	// TODO you should write some tests
+	@Test
+	public void testCheckPassword1()
+	{
+		Assert.assertEquals(u.checkPassword("pass1"), false);
+	}
+
+	@Test
+	public void testCheckPassword2()
+	{
+		Assert.assertEquals(u.checkPassword("pass1!"), true);
+	}
+
+	@Test
+	public void testCheckPassword3()
+	{
+		Assert.assertEquals(u.checkPassword("Pass1!"), false);
+	}
+
+	@Test
+	public void testCheckPassword4()
+	{
+		Assert.assertEquals(u.checkPassword("pass2!"), false);
+	}
+
+	@Test
+	public void testCheckPassword5()
+	{
+		Assert.assertEquals(u.checkPassword("pAss1!"), false);
+	}
+
+	@Test
+	public void testCheckPassword6()
+	{
+		Assert.assertEquals(u.checkPassword("pas1!"), false);
+	}
 
 	/********************************************************************************************************
 	 *
