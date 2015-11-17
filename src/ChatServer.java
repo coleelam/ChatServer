@@ -216,13 +216,12 @@ public class ChatServer {
                         Long.parseLong(parsed[1]);
                         parsed[2].toString();
                         if (parsed.length > 3)
-                            throw new NumberFormatException();
+                            return MessageFactory.FORMAT_COMMAND_ERROR;
+
                     } catch (NumberFormatException nfe)
                     {   return MessageFactory.INVALID_VALUE_ERROR;  }
                     catch (IndexOutOfBoundsException ioobe)
-                    {
-                        return MessageFactory.FORMAT_COMMAND_ERROR;
-                    }
+                    {   return MessageFactory.FORMAT_COMMAND_ERROR;  }
                     break;
                 // Checks for 2 parameters, param1 should be convertible to a long.
                 // param2 should be convertible to an int.
