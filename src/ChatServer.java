@@ -219,12 +219,11 @@ public class ChatServer {
                         parsed[2].toString();
                         if (parsed.length > 3)
                             throw new NumberFormatException();
-                    } catch (NumberFormatException e)
+
+                    } catch (NumberFormatException nfe)
                     {   return MessageFactory.FORMAT_COMMAND_ERROR;  }
                     catch (IndexOutOfBoundsException ioobe)
-                    {
-                        return MessageFactory.INVALID_VALUE_ERROR;
-                    }
+                    {   return MessageFactory.INVALID_VALUE_ERROR;  }
                     break;
                 // Checks for 2 parameters, param1 should be convertible to a long.
                 // param2 should be convertible to an int.
