@@ -432,12 +432,20 @@ public class ChatServer {
 
     public String getMessages(String[] parsed)
     {
-
-        int numMessages = Integer.parseInt(parsed[2]);
-        String[] messageRequest = messages.getNewest(numMessages);
+        int numMessages = 0;
 
         String response = MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR,
-                        "Invalid getMessages request");
+                "Invalid getMessages request");
+        try {
+
+            numMessages = Integer.parseInt(parsed[2]);
+
+        } catch (NumberFormatException e) {
+            return response;
+        }
+
+        String[] messageRequest = messages.getNewest(numMessages);
+
 
         if (numMessages >= 1 && messageRequest != null)
         {
