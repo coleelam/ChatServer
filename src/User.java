@@ -56,7 +56,7 @@ public class User implements Comparable<User>
         return this.getName().compareTo(user.getName());
     }
 
-    public static Comparator<User> UserNameComparator = new Comparator<User>() {
+    public static Comparator<User> userNameComparator = new Comparator<User>() {
         public int compare(User user1, User user2)
         {
             return user1.getName().compareTo(user2.getName());

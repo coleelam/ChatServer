@@ -27,7 +27,7 @@ public class ChatServer {
 
         // Add contents of users[] passed in.
         this.users.addAll(Arrays.asList(users));
-        Collections.sort(this.users, User.UserNameComparator);
+        Collections.sort(this.users, User.userNameComparator);
 
         // Cannot binary search unless there's more than 1 User in this.users.
         if (users.length > 0) {
@@ -220,7 +220,8 @@ public class ChatServer {
                     } catch (NumberFormatException | IndexOutOfBoundsException e)
                     {   code = MessageFactory.FORMAT_COMMAND_ERROR;  }
                     break;
-                // Checks for 2 parameters, param1 should be convertible to a long. param2 should be convertible to an int.
+                // Checks for 2 parameters, param1 should be convertible to a long.
+                // param2 should be convertible to an int.
                 case GET_MESSAGES:
                     try {
                         Long.parseLong(parsed[1]);
@@ -265,7 +266,8 @@ public class ChatServer {
      *  Looks through the users ArrayList (linearly) to find the User with the given cookieID. Returns that User.
      *
      *  @param cookieID - String that contains a valid Long, in the format of a SessionCookie UID.
-     *  @return - the User object that has the matching cookieID. If cookieID is null or if User doesn't exist, returns null;
+     *  @return - the User object that has the matching cookieID. If cookieID is null or if User doesn't exist,
+     *  returns null;
      */
     private User findUser(String cookieID)
     {
@@ -318,7 +320,8 @@ public class ChatServer {
         //      Usernames and passwords can only contain alphanumerical values [A-Za-z0-9].
         for (String param : new String[]{parsed[2], parsed[3]})
             if (!param.matches("[A-Za-z0-9]+"))
-                response = MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR, "the username or password does " +
+                response = MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR,
+                        "the username or password does " +
                                 "not fit this regex: [A-Za-z0-9].");
 
         // Checks:
@@ -326,7 +329,8 @@ public class ChatServer {
         //      Password must be between 4 and 40 characters in length (inclusive).
         if (parsed[2].length() < 1 || parsed[2].length() > 20
                 || parsed[3].length() < 4 || parsed[3].length() > 40)
-            response = MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR, "the username or password does not " +
+            response = MessageFactory.makeErrorMessage(MessageFactory.INVALID_VALUE_ERROR,
+                    "the username or password does not " +
                             "fit the length requirements: 0 < username < 21 && 3 < password < 41.");
 
         // Finally:
@@ -346,7 +350,8 @@ public class ChatServer {
             }
             else {
                 for (int i = 0; i < users.size(); i++)
-                    if (users.get(i).getName().equals(parsed[2]))   // Make sure nothing is supposed to happen after this return...
+                    // Make sure nothing is supposed to happen after this return...
+                    if (users.get(i).getName().equals(parsed[2]))
                         return MessageFactory.makeErrorMessage(MessageFactory.USER_ERROR);
                 users.add(newUser);
             }

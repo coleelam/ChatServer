@@ -18,26 +18,26 @@ public class CircularBuffer
     private String[] buffer;
 
     private int size;
-    private int current_index;
-    private int message_count;
+    private int currentIndex;
+    private int messageCount;
 
     // CONSTRUCTORS:
     public CircularBuffer()
     {
         size = 25;
         buffer = new String[size];
-        current_index = 0;
-        message_count = 0;
+        currentIndex = 0;
+        messageCount = 0;
     }
     public CircularBuffer(int size)
     {
         this.size = size;
         buffer = new String[this.size];
-        current_index = 0;
-        message_count = 0;
+        currentIndex = 0;
+        messageCount = 0;
     }
 
-    public int getMessageCount() {  return message_count;   }
+    public int getMessageCount() {  return messageCount;   }
 
     /**
      * Puts message in the circular loop and replaces the oldest message in the loop.
@@ -48,31 +48,31 @@ public class CircularBuffer
         if (message == null)
             return;
 
-        buffer[current_index] = String.format("%04d) " + message, message_count);
+        buffer[currentIndex] = String.format("%04d) " + message, messageCount);
 
-        if (message_count >= 9999)
-            message_count = 0;
+        if (messageCount >= 9999)
+            messageCount = 0;
         else
-            message_count++;
+            messageCount++;
 
-        if (current_index >= buffer.length - 1)
-            current_index = 0;
+        if (currentIndex >= buffer.length - 1)
+            currentIndex = 0;
         else
-            current_index++;
+            currentIndex++;
     }
 
     /**
-     * Retrieves the freshest messages in the buffer (the one just behind the current_index).
+     * Retrieves the freshest messages in the buffer (the one just behind the currentIndex).
      * @param numMessages - the number of messages to retrieve.
-     * @return - the message -1 from current_index in buffer.
+     * @return - the message -1 from currentIndex in buffer.
      */
     public String[] getNewest(int numMessages)
     {
         if (numMessages < 0)
             return null;
 
-        if (numMessages == 0 || size <= 0 || message_count <= 0 || (current_index == 0 && buffer[size - 1] == null)
-                             || (current_index != 0 && buffer[current_index - 1] == null))
+        if (numMessages == 0 || size <= 0 || messageCount <= 0 || (currentIndex == 0 && buffer[size - 1] == null)
+                             || (currentIndex != 0 && buffer[currentIndex - 1] == null))
             return new String[0];
 
         // Makes sure numMessages isn't more than the size of the buffer.
@@ -81,7 +81,7 @@ public class CircularBuffer
         String[] messages = new String[numMessages];    // Inits return array
 
         // Gets messages in proper order
-        int temp = current_index - 1;   // temp = Holds the reverse iterator of buffer.
+        int temp = currentIndex - 1;   // temp = Holds the reverse iterator of buffer.
         for (int i = numMessages - 1; i >= 0; i--)   // i = Holds the reverse iterator of messages.
         {
             if (temp < 0)

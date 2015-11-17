@@ -239,7 +239,7 @@ public class Project4SampleTest {
 	 *
 	 ********************************************************************************************************/
 
-	@Test(timeout=1000)
+	@Test(timeout = 1000)
 	public void testAddUserNominal() {
 		User[] users = new User[1];
 		users[0] = new User("greg", "greg", new SessionCookie(42));
@@ -257,7 +257,7 @@ public class Project4SampleTest {
 				student.startsWith("SUCCESS"));
 	}
 
-	@Test(timeout=1000)
+	@Test(timeout = 1000)
 	public void testAddUserInvalidUsername() {
 		User[] users = new User[1];
 		users[0] = new User("greg", "greg", new SessionCookie(42));
@@ -272,7 +272,7 @@ public class Project4SampleTest {
 		assertTrue("addUser:" + msg, "".equals(msg));
 	}
 
-	@Test(timeout=1000)
+	@Test(timeout = 1000)
 	public void testAddUserInvalidPassword() {
 		User[] users = new User[1];
 		users[0] = new User("greg", "greg", new SessionCookie(42));
@@ -292,7 +292,7 @@ public class Project4SampleTest {
 	 * ChatServer.userLogin
 	 *
 	 ********************************************************************************************************/
-	@Test(timeout=1000)
+	@Test(timeout = 1000)
 	public void testRootUser() {
 		User[] users = new User[1];
 		users[0] = new User("greg", "greg", new SessionCookie(42));
@@ -302,7 +302,7 @@ public class Project4SampleTest {
 		assertTrue("ChatServer: can not log as root user", student.matches("SUCCESS\t\\d+\r\n"));
 	}
 
-	@Test(timeout=1000)
+	@Test(timeout = 1000)
 	public void testUserLoginNominal() {
 		User[] users = new User[1];
 		users[0] = new User("greg", "greg", null);
@@ -319,7 +319,7 @@ public class Project4SampleTest {
 	 *
 	 ********************************************************************************************************/
 
-	@Test(timeout=1000)
+	@Test(timeout = 1000)
 	public void testPostMessageNominal() {
 		User[] users = new User[1];
 		users[0] = new User("greg", "greg", new SessionCookie(42));
@@ -332,7 +332,7 @@ public class Project4SampleTest {
 				ta, student);
 	}
 
-	@Test(timeout=1000)
+	@Test(timeout = 1000)
 	public void testPostMessageEmptyMessage() {
 		User[] users = new User[1];
 		users[0] = new User("greg", "greg", new SessionCookie(42));
@@ -349,7 +349,7 @@ public class Project4SampleTest {
 	 *
 	 ********************************************************************************************************/
 
-	@Test(timeout=1000)
+	@Test(timeout = 1000)
 	public void testGetMessagesNominal() {
 		User[] users = new User[1];
 		users[0] = new User("greg", "greg", new SessionCookie(42));
@@ -378,7 +378,7 @@ public class Project4SampleTest {
 	 * ChatServer.parseRequest
 	 *
 	 ********************************************************************************************************/
-	@Test(timeout=1000)
+	@Test(timeout = 1000)
 	public void testAddUserWrongFormat() {
 		User[] users = new User[1];
 		users[0] = new User("greg", "greg", new SessionCookie(42));
@@ -393,7 +393,7 @@ public class Project4SampleTest {
 		assertTrue("parseRequest:" + msg, "".equals(msg));
 	}
 
-	@Test(timeout=1000)
+	@Test(timeout = 1000)
 	public void testUserLoginWrongFormat() {
 		User[] users = new User[1];
 		users[0] = new User("greg", "greg", new SessionCookie(42));
@@ -408,7 +408,7 @@ public class Project4SampleTest {
 		assertTrue("parseRequest:" + msg, "".equals(msg));
 	}
 
-	@Test(timeout=1000)
+	@Test(timeout = 1000)
 	public void testGetMessageWrongFormat() {
 		User[] users = new User[1];
 		users[0] = new User("greg", "greg", new SessionCookie(42));
@@ -423,7 +423,7 @@ public class Project4SampleTest {
 		assertTrue("parseRequest:" + msg, "".equals(msg));
 	}
 
-	@Test(timeout=1000)
+	@Test(timeout = 1000)
 	public void testPostMessageWrongFormat() {
 		User[] users = new User[1];
 		users[0] = new User("greg", "greg", new SessionCookie(42));
@@ -438,7 +438,7 @@ public class Project4SampleTest {
 		assertTrue("parseRequest:" + msg, "".equals(msg));
 	}
 
-	@Test(timeout=1000)
+	@Test(timeout = 1000)
 	public void testInvalidCommand() {
 		User[] users = new User[1];
 		users[0] = new User("greg", "greg", new SessionCookie(42));
@@ -449,7 +449,7 @@ public class Project4SampleTest {
 		assertTrue("parseRequest:" + msg, "".equals(msg));
 	}
 
-	@Test(timeout=1000)
+	@Test(timeout = 1000)
 	public void testCookieValidity() throws InterruptedException {
 		User[] users = new User[1];
 		users[0] = new User("greg", "greg", new SessionCookie(42));
@@ -466,7 +466,7 @@ public class Project4SampleTest {
 		assertTrue("parseRequest:" + msg + " (after timeout)", "".equals(msg));
 	}
 
-	@Test(timeout=10000)
+	@Test(timeout = 10000)
 	public void testUpdateCookieGetMessage() throws InterruptedException {
 
 		/* Get messages */

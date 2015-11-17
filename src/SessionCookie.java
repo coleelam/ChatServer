@@ -15,8 +15,8 @@ public class SessionCookie
 {
     private static final int TIMEOUT = 300; // seconds. Default
 
-    private long UID;    // Personal (unique) identification number
-    private double last_update;   // seconds, using System.currentTimeMillis()
+    private long uID;    // Personal (unique) identification number
+    private double lastUpdate;   // seconds, using System.currentTimeMillis()
     public static int timeoutLength = -1;    // Overwriting, TODO: May want to be changed to private.
 
     //      Randomization of the UIDs must occur "outside" of the SessionCookie class, as the SessionCookie constructor
@@ -24,24 +24,25 @@ public class SessionCookie
 
     public SessionCookie(long id)
     {
-        this.UID = id;
+        this.uID = id;
 
         updateTimeOfActivity();
     }
 
     /**
-     * Compares last_update to current time to check if the cookie has timed out from TIMEOUT or timeoutLength, depending on
+     * Compares lastUpdate to current time to check if the cookie has timed out from
+     * TIMEOUT or timeoutLength, depending on
      *  if timeoutLength != -1 (means TIMEOUT has not been overwritten).
-     * @return - true if current time is lower than last_update + TIMEOUT/timeoutLength, false otherwise.
+     * @return - true if current time is lower than lastUpdate + TIMEOUT/timeoutLength, false otherwise.
      */
     public boolean hasTimedOut()
     {
         if (timeoutLength != -1) {
-            if ((System.currentTimeMillis() / 1000.0) < (last_update + timeoutLength)) {
+            if ((System.currentTimeMillis() / 1000.0) < (lastUpdate + timeoutLength)) {
                 return false;
             }
         }
-        else if ((System.currentTimeMillis() / 1000.0) < (last_update + TIMEOUT)) {
+        else if ((System.currentTimeMillis() / 1000.0) < (lastUpdate + TIMEOUT)) {
             return false;
         }
 
@@ -50,12 +51,12 @@ public class SessionCookie
 
     public void updateTimeOfActivity()
     {
-        last_update = (System.currentTimeMillis() / 1000.0);
+        lastUpdate = (System.currentTimeMillis() / 1000.0);
     }
 
     public long getID()
     {
-        return UID;
+        return uID;
     }
 
     /**
